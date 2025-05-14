@@ -6,6 +6,10 @@ import {
   FileText, Download, Eye, Filter, Search, Calendar,
   TrendingUp, BarChart2, PieChart, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
+import {
+  LineChart, Line, AreaChart, Area, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
 
 interface Report {
   id: string;
@@ -21,6 +25,27 @@ interface Report {
     change: number;
   };
 }
+
+interface MonthlyData {
+  month: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+}
+
+const monthlyData: MonthlyData[] = [
+  { month: 'Jan', revenue: 65000, expenses: 45000, profit: 20000 },
+  { month: 'Fév', revenue: 72000, expenses: 48000, profit: 24000 },
+  { month: 'Mar', revenue: 81000, expenses: 55000, profit: 26000 }
+];
+
+const expenseCategories = [
+  { name: 'Personnel', value: 45 },
+  { name: 'Marketing', value: 15 },
+  { name: 'Locaux', value: 20 },
+  { name: 'Services', value: 12 },
+  { name: 'Autres', value: 8 }
+];
 
 const mockReports: Report[] = [
   {
@@ -245,6 +270,78 @@ export const InterimReporting: React.FC = () => {
                     <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
                       <PieChart className="text-purple-500" size={20} />
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Graphiques */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                  <CardTitle>Évolution mensuelle</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                        <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                        <Legend />
+                        <Line 
+                          type="monotone" 
+                          dataKey="revenue" 
+                          stroke="#0046AD" 
+                          name="CA"
+                          strokeWidth={2}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="expenses" 
+                          stroke="#FF6B35" 
+                          name="Charges"
+                          strokeWidth={2}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="profit" 
+                          stroke="#00A3A1" 
+                          name="Résultat"
+                          strokeWidth={2}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+                  <CardTitle>Répartition des charges</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={expenseCategories}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis tickFormatter={(value) => `${value}%`} />
+                        <Tooltip formatter={(value) => `${value}%`} />
+                        <Bar 
+                          dataKey="value" 
+                          fill="#0046AD"
+                          radius={[4, 4, 0, 0]}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
