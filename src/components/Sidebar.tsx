@@ -23,9 +23,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   ];
 
   const accountingSubItems = [
-    { name: 'Factures & Offres', path: '/accounting/clients/invoices' },
-    { name: 'Bons de commande', path: '/accounting/clients/purchase-orders' },
-    { name: 'Gestion des rappels', path: '/accounting/clients/reminders' },
+    { name: 'Factures & Offres', path: '/accounting/clients' },
+    { name: 'Bons de commande', path: '/accounting/purchase-orders' },
+    { name: 'Gestion des rappels', path: '/accounting/reminders' },
     { name: 'Fournisseurs', path: '/accounting/suppliers' },
     { name: 'Rapprochement', path: '/accounting/bank-reconciliation' },
     { name: 'Clôture', path: '/accounting/interim-closing' }
@@ -81,7 +81,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           <li>
             <button
               onClick={() => setIsAccountingOpen(!isAccountingOpen)}
-              className="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors text-white hover:bg-[#003580]"
+              className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeItem.startsWith('/accounting')
+                  ? 'bg-white text-[#0046AD]'
+                  : 'text-white hover:bg-[#003580]'
+              }`}
             >
               <span className="mr-3"><Wallet size={20} /></span>
               <span>Comptabilité</span>
