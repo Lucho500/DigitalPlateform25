@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, ChevronDown, ChevronRight } from 'lucide-react';
 import { MenuItem } from '../types';
 
@@ -8,7 +8,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const [activeItem, setActiveItem] = useState<string>('dashboard');
+  const location = useLocation();
   const [isAccountingOpen, setIsAccountingOpen] = useState(true);
 
   const menuItems: MenuItem[] = [
@@ -63,11 +63,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link
                 to={item.path}
                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  activeItem === item.path 
+                  location.pathname === item.path
                     ? 'bg-white text-[#0046AD]' 
                     : 'text-white hover:bg-[#003580]'
                 }`}
-                onClick={() => setActiveItem(item.path)}
               >
                 <span className="mr-3">{getIcon(item.icon)}</span>
                 <span>{item.name}</span>
@@ -80,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
             <button
               onClick={() => setIsAccountingOpen(!isAccountingOpen)}
               className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                activeItem.startsWith('/accounting')
+                location.pathname.startsWith('/accounting')
                   ? 'bg-white text-[#0046AD]'
                   : 'text-white hover:bg-[#003580]'
               }`}
@@ -101,11 +100,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                     <Link
                       to={subItem.path}
                       className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        activeItem === subItem.path 
+                        location.pathname === subItem.path 
                           ? 'bg-white text-[#0046AD]' 
                           : 'text-white hover:bg-[#003580]'
                       }`}
-                      onClick={() => setActiveItem(subItem.path)}
                     >
                       {subItem.name}
                     </Link>
