@@ -10,7 +10,7 @@ import {
   Download, Filter, Database, Shield, FileText, TrendingUp,
   Users, DollarSign, Calendar, PieChart as PieChartIcon,
   BarChart2, ArrowUpRight, ArrowDownRight, Target,
-  Briefcase, CreditCard, Building
+  Briefcase, CreditCard, Building, Eye
 } from 'lucide-react';
 
 type TabType = 'data_lake' | 'reporting' | 'planning' | 'projection';
