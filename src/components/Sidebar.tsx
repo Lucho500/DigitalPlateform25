@@ -23,7 +23,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   ];
 
   const accountingSubItems = [
-    { name: 'Clients', path: '/accounting/clients' },
+    { name: 'Factures & Offres', path: '/accounting/clients/invoices' },
+    { name: 'Bons de commande', path: '/accounting/clients/purchase-orders' },
+    { name: 'Gestion des rappels', path: '/accounting/clients/reminders' },
     { name: 'Fournisseurs', path: '/accounting/suppliers' },
     { name: 'Rapprochement', path: '/accounting/bank-reconciliation' },
     { name: 'Clôture', path: '/accounting/interim-closing' }
