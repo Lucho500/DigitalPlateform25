@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign } from 'lucide-react';
+import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, ChevronDown, ChevronRight } from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface SidebarProps {
@@ -9,17 +9,24 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const [activeItem, setActiveItem] = useState<string>('dashboard');
+  const [isAccountingOpen, setIsAccountingOpen] = useState(true);
 
   const menuItems: MenuItem[] = [
     { name: 'Tableau de bord', path: '/', icon: 'Home' },
     { name: 'Documents', path: '/documents', icon: 'FileText' },
-    { name: 'Comptabilité', path: '/accounting', icon: 'Wallet' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
     { name: 'Analytics', path: '/analytics', icon: 'BarChart3' },
     { name: 'Messagerie', path: '/messages', icon: 'MessageSquare' },
     { name: 'Experts', path: '/experts', icon: 'Users' },
     { name: 'Paramètres', path: '/settings', icon: 'Settings' }
+  ];
+
+  const accountingSubItems = [
+    { name: 'Clients', path: '/accounting/clients' },
+    { name: 'Fournisseurs', path: '/accounting/suppliers' },
+    { name: 'Rapprochement', path: '/accounting/bank-reconciliation' },
+    { name: 'Clôture', path: '/accounting/interim-closing' }
   ];
 
   const getIcon = (iconName: string) => {
@@ -67,6 +74,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               </Link>
             </li>
           ))}
+          
+          {/* Section Comptabilité avec sous-menus */}
+          <li>
+            <button
+              onClick={() => setIsAccountingOpen(!isAccountingOpen)}
+              className="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors text-white hover:bg-[#003580]"
+            >
+              <span className="mr-3"><Wallet size={20} /></span>
+              <span>Comptabilité</span>
+              {isAccountingOpen ? (
+                <ChevronDown size={16} className="ml-auto" />
+              ) : (
+                <ChevronRight size={16} className="ml-auto" />
+              )}
+            </button>
+            
+            {isAccountingOpen && (
+              <ul className="mt-1 ml-6 space-y-1">
+                {accountingSubItems.map((subItem) => (
+                  <li key={subItem.name}>
+                    <Link
+                      to={subItem.path}
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        activeItem === subItem.path 
+                          ? 'bg-white text-[#0046AD]' 
+                          : 'text-white hover:bg-[#003580]'
+                      }`}
+                      onClick={() => setActiveItem(subItem.path)}
+                    >
+                      {subItem.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
         </ul>
       </nav>
       
