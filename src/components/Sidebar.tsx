@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, ChevronDown, ChevronRight } from 'lucide-react';
+import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Bank, BookOpen } from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface SidebarProps {
@@ -9,11 +9,14 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const location = useLocation();
-  const [isAccountingOpen, setIsAccountingOpen] = useState(true);
 
   const menuItems: MenuItem[] = [
     { name: 'Tableau de bord', path: '/', icon: 'Home' },
     { name: 'Documents', path: '/documents', icon: 'FileText' },
+    { name: 'Clients', path: '/clients', icon: 'Users' },
+    { name: 'Fournisseurs', path: '/suppliers', icon: 'CreditCard' },
+    { name: 'Rapprochement', path: '/bank-reconciliation', icon: 'Bank' },
+    { name: 'Clôture', path: '/interim-closing', icon: 'BookOpen' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
     { name: 'Analytics', path: '/analytics', icon: 'BarChart3' },
@@ -22,23 +25,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     { name: 'Paramètres', path: '/settings', icon: 'Settings' }
   ];
 
-  const accountingSubItems = [
-    { name: 'Clients', path: '/accounting/clients' },
-    { name: 'Fournisseurs', path: '/accounting/suppliers' },
-    { name: 'Rapprochement', path: '/accounting/bank-reconciliation' },
-    { name: 'Clôture', path: '/accounting/interim-closing' }
-  ];
-
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Home': return <Home size={20} />;
       case 'FileText': return <FileText size={20} />;
-      case 'Wallet': return <Wallet size={20} />;
+      case 'Users': return <Users size={20} />;
+      case 'CreditCard': return <CreditCard size={20} />;
+      case 'Bank': return <Bank size={20} />;
+      case 'BookOpen': return <BookOpen size={20} />;
       case 'DollarSign': return <DollarSign size={20} />;
       case 'PieChart': return <PieChart size={20} />;
       case 'BarChart3': return <BarChart3 size={20} />;
       case 'MessageSquare': return <MessageSquare size={20} />;
-      case 'Users': return <Users size={20} />;
       case 'Settings': return <Settings size={20} />;
       default: return <Home size={20} />;
     }
@@ -63,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link
                 to={item.path}
                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  location.pathname === item.path
+                  location.pathname === item.path 
                     ? 'bg-white text-[#0046AD]' 
                     : 'text-white hover:bg-[#003580]'
                 }`}
@@ -73,45 +71,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               </Link>
             </li>
           ))}
-          
-          {/* Section Comptabilité avec sous-menus */}
-          <li>
-            <button
-              onClick={() => setIsAccountingOpen(!isAccountingOpen)}
-              className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                location.pathname.startsWith('/accounting')
-                  ? 'bg-white text-[#0046AD]'
-                  : 'text-white hover:bg-[#003580]'
-              }`}
-            >
-              <span className="mr-3"><Wallet size={20} /></span>
-              <span>Comptabilité</span>
-              {isAccountingOpen ? (
-                <ChevronDown size={16} className="ml-auto" />
-              ) : (
-                <ChevronRight size={16} className="ml-auto" />
-              )}
-            </button>
-            
-            {isAccountingOpen && (
-              <ul className="mt-1 ml-6 space-y-1">
-                {accountingSubItems.map((subItem) => (
-                  <li key={subItem.name}>
-                    <Link
-                      to={subItem.path}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        location.pathname === subItem.path 
-                          ? 'bg-white text-[#0046AD]' 
-                          : 'text-white hover:bg-[#003580]'
-                      }`}
-                    >
-                      {subItem.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
         </ul>
       </nav>
       
