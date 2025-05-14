@@ -7,6 +7,7 @@ import { Clients } from './pages/Accounting/Clients';
 import { Suppliers } from './pages/Accounting/Suppliers';
 import { BankReconciliation } from './pages/Accounting/BankReconciliation';
 import { InterimClosing } from './pages/Accounting/InterimClosing';
+import { InterimReporting } from './pages/Accounting/InterimReporting';
 import { Analytics } from './pages/Analytics';
 import { Messages } from './pages/Messages';
 import { Experts } from './pages/Experts';
@@ -25,6 +26,7 @@ function App() {
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="bank-reconciliation" element={<BankReconciliation />} />
           <Route path="interim-closing" element={<InterimClosing />} />
+          <Route path="interim-reporting" element={<InterimReporting />} />
           <Route path="declarations" element={<Declarations />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="messages" element={<Messages />} />

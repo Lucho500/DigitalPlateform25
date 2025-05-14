@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen } from 'lucide-react';
+import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen, FileSpreadsheet } from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface SidebarProps {
@@ -17,6 +17,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     { name: 'Fournisseurs', path: '/suppliers', icon: 'CreditCard' },
     { name: 'Rapprochement', path: '/bank-reconciliation', icon: 'Bank' },
     { name: 'Clôture', path: '/interim-closing', icon: 'BookOpen' },
+    { name: 'Reporting', path: '/interim-reporting', icon: 'FileSpreadsheet' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
     { name: 'Analytics', path: '/analytics', icon: 'BarChart3' },
@@ -33,6 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       case 'CreditCard': return <CreditCard size={20} />;
       case 'Bank': return <Bank size={20} />;
       case 'BookOpen': return <BookOpen size={20} />;
+      case 'FileSpreadsheet': return <FileSpreadsheet size={20} />;
       case 'DollarSign': return <DollarSign size={20} />;
       case 'PieChart': return <PieChart size={20} />;
       case 'BarChart3': return <BarChart3 size={20} />;
