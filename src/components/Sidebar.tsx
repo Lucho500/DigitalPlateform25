@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Bank, BookOpen } from 'lucide-react';
+import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen } from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface SidebarProps {
