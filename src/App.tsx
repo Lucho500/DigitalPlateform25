@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="documents" element={<Documents />} />
-          <Route path="accounting" element={<Accounting />}>
+          <Route path="accounting">
             <Route index element={<Navigate to="clients" replace />} />
             <Route path="clients" element={<Clients />} />
             <Route path="suppliers" element={<Suppliers />} />
