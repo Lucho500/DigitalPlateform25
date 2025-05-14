@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button';
 import { FileText, Plus, Download, Search, Filter, Upload, Eye, MoreVertical, ArrowUpRight, Clock, CheckCircle, AlertCircle, ArrowDownRight } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 
-type TabType = 'offers' | 'invoices' | 'open-items' | 'reminders';
+type TabType = 'offres' | 'factures' | 'postes_ouverts' | 'rappels';
 
 interface TabProps {
   id: TabType;
@@ -13,10 +13,10 @@ interface TabProps {
 }
 
 const tabs: TabProps[] = [
-  { id: 'offers', label: 'Offres', count: 3 },
-  { id: 'invoices', label: 'Factures', count: 12 },
-  { id: 'open-items', label: 'Postes ouverts débiteurs', count: 8 },
-  { id: 'reminders', label: 'Gestion des rappels', count: 2 }
+  { id: 'offres', label: 'Offres', count: 3 },
+  { id: 'factures', label: 'Factures', count: 12 },
+  { id: 'postes_ouverts', label: 'Postes ouverts débiteurs', count: 8 },
+  { id: 'rappels', label: 'Gestion des rappels', count: 2 }
 ];
 
 interface ClientDocument {
@@ -129,7 +129,7 @@ const mockReminders: ClientDocument[] = [
 ];
 
 export const Clients: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('offers');
+  const [activeTab, setActiveTab] = useState<TabType>('offres');
   const [searchTerm, setSearchTerm] = useState('');
 
   const formatCurrency = (amount: number) => {
@@ -172,75 +172,20 @@ export const Clients: React.FC = () => {
     }
   };
 
-  const renderTable = (documents: ClientDocument[]) => (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Numéro
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Client
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Date
-            </th>
-            {activeTab !== 'offers' && (
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Échéance
-              </th>
-            )}
-            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Montant
-            </th>
-            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Statut
-            </th>
-            <th className="px-4 py-3"></th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {documents.map((doc) => (
-            <tr 
-              key={doc.id}
-              className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                {doc.number}
-              </td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {doc.client}
-              </td>
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {formatDate(doc.date)}
-              </td>
-              {activeTab !== 'offers' && (
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {doc.dueDate ? formatDate(doc.dueDate) : '-'}
-                </td>
-              )}
-              <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900 dark:text-white">
-                {formatCurrency(doc.amount)}
-              </td>
-              <td className="px-4 py-4 whitespace-nowrap text-center">
-                {getStatusBadge(doc.status)}
-              </td>
-              <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <Button variant="ghost" size="sm">
-                  <Eye size={16} className="mr-2" />
-                  Voir
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <MoreVertical size={16} />
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  const getDocuments = () => {
+    switch (activeTab) {
+      case 'offres':
+        return mockOffers;
+      case 'factures':
+        return mockInvoices;
+      case 'postes_ouverts':
+        return mockOpenItems;
+      case 'rappels':
+        return mockReminders;
+      default:
+        return [];
+    }
+  };
 
   return (
     <div className="p-6">
@@ -261,65 +206,121 @@ export const Clients: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
-            />
-          </div>
-          <Button variant="outline" leftIcon={<Filter size={16} />}>
-            Filtres
-          </Button>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" leftIcon={<Upload size={16} />}>
-            Importer
-          </Button>
-          <Button variant="outline" leftIcon={<Download size={16} />}>
-            Exporter
-          </Button>
-        </div>
-      </div>
-
       <Card>
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <div className="flex">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`relative min-w-0 flex-1 overflow-hidden bg-white dark:bg-gray-800 py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 dark:hover:bg-gray-700 focus:z-10 ${
-                  activeTab === tab.id
-                    ? 'text-[#0046AD] border-b-2 border-[#0046AD]'
-                    : 'text-gray-500 dark:text-gray-400 border-b border-transparent'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+        <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                      : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
+                      ? 'bg-[#0046AD] text-white'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  {tab.label}
+                  {tab.count !== undefined && (
+                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                      activeTab === tab.id
+                        ? 'bg-white bg-opacity-20 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                    }`}>
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+                />
+              </div>
+              <Button variant="outline" leftIcon={<Filter size={16} />}>
+                Filtres
+              </Button>
+              <Button variant="outline" leftIcon={<Download size={16} />}>
+                Exporter
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <CardContent className="p-6">
-          {activeTab === 'offers' && renderTable(mockOffers)}
-          {activeTab === 'invoices' && renderTable(mockInvoices)}
-          {activeTab === 'open-items' && renderTable(mockOpenItems)}
-          {activeTab === 'reminders' && renderTable(mockReminders)}
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Numéro
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Client
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Date
+                  </th>
+                  {activeTab !== 'offres' && (
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                  )}
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Montant
+                  </th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Statut
+                  </th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {getDocuments().map((doc) => (
+                  <tr 
+                    key={doc.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                      {doc.number}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {doc.client}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {formatDate(doc.date)}
+                    </td>
+                    {activeTab !== 'offres' && (
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {doc.dueDate ? formatDate(doc.dueDate) : '-'}
+                      </td>
+                    )}
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900 dark:text-white">
+                      {formatCurrency(doc.amount)}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-center">
+                      {getStatusBadge(doc.status)}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <Button variant="ghost" size="sm">
+                        <Eye size={16} className="mr-2" />
+                        Voir
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <MoreVertical size={16} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
     </div>
