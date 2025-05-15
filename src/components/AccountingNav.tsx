@@ -1,6 +1,10 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Users, FileText, CreditCard, Ban as Bank, PieChart, BarChart2, BookOpen, FileSpreadsheet } from 'lucide-react';
+import { 
+  Users, FileText, CreditCard, Ban as Bank, PieChart, 
+  BarChart2, BookOpen, FileSpreadsheet, Package, 
+  TrendingUp, Building2, Headphones 
+} from 'lucide-react';
 
 interface NavItem {
   path: string;
@@ -14,7 +18,7 @@ const navItems: NavItem[] = [
     path: '/accounting/clients',
     label: 'Clients',
     icon: <Users size={20} />,
-    description: 'Factures, devis et gestion des rappels'
+    description: 'Factures, offres et gestion des rappels'
   },
   {
     path: '/accounting/suppliers',
@@ -51,6 +55,30 @@ const navItems: NavItem[] = [
     label: 'Import Écritures Salaire',
     icon: <FileSpreadsheet size={20} />,
     description: 'Intégration comptable des salaires'
+  },
+  {
+    path: '/accounting/inventory',
+    label: 'Gestion des Stocks',
+    icon: <Package size={20} />,
+    description: 'Inventaire Permanent'
+  },
+  {
+    path: '/accounting/securities',
+    label: 'Gestion des Titres',
+    icon: <TrendingUp size={20} />,
+    description: 'Valeurs de marché'
+  },
+  {
+    path: '/accounting/fixed-assets',
+    label: 'Gestion des Immos',
+    icon: <Building2 size={20} />,
+    description: 'Gestion des immobilisations'
+  },
+  {
+    path: '/accounting/audit-support',
+    label: 'Support Audit',
+    icon: <Headphones size={20} />,
+    description: 'Support à l\'audit'
   }
 ];
 
