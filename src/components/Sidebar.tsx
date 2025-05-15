@@ -2,9 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   BarChart3, FileText, Home, MessageSquare, PieChart, Settings, 
-  Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen, 
-  FileSpreadsheet, Clock, Receipt, FolderOpen, Building2, Calendar,
-  CheckSquare, Calculator
+  Users, Wallet, DollarSign, Building2, Calendar
 } from 'lucide-react';
 import { MenuItem } from '../types';
 
@@ -18,7 +16,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const menuItems: MenuItem[] = [
     { name: 'Tableau de bord', path: '/', icon: 'Home' },
     { name: 'Documents', path: '/documents', icon: 'FileText' },
-    { name: 'Comptabilité', path: '/accounting/clients', icon: 'Calculator' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
     { name: 'Administratif', path: '/administrative', icon: 'Building2' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
@@ -32,12 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     switch (iconName) {
       case 'Home': return <Home size={20} />;
       case 'FileText': return <FileText size={20} />;
-      case 'Calculator': return <Calculator size={20} />;
       case 'Users': return <Users size={20} />;
-      case 'CreditCard': return <CreditCard size={20} />;
-      case 'Bank': return <Bank size={20} />;
-      case 'BookOpen': return <BookOpen size={20} />;
-      case 'FileSpreadsheet': return <FileSpreadsheet size={20} />;
       case 'DollarSign': return <DollarSign size={20} />;
       case 'Building2': return <Building2 size={20} />;
       case 'PieChart': return <PieChart size={20} />;
@@ -67,8 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link
                 to={item.path}
                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  location.pathname === item.path || 
-                  (item.path.includes('/accounting') && location.pathname.includes('/accounting'))
+                  location.pathname === item.path 
                     ? 'bg-white text-[#0046AD]' 
                     : 'text-white hover:bg-[#003580]'
                 }`}
