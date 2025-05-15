@@ -10,6 +10,7 @@ import { Declarations } from './pages/Declarations';
 import { Settings } from './pages/Settings';
 import { Payroll } from './pages/Payroll';
 import { Administrative } from './pages/Administrative';
+import { Finance } from './pages/Finance';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="payroll" element={<Payroll />} />
           <Route path="administrative" element={<Administrative />} />
+          <Route path="finance" element={<Finance />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
