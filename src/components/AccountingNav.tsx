@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Users, FileText, CreditCard, Ban as Bank, PieChart, 
   BarChart2, BookOpen, FileSpreadsheet, Package, 
-  TrendingUp, Building2, Headphones 
+  Building2, Headphones 
 } from 'lucide-react';
 
 interface NavItem {
@@ -61,12 +61,6 @@ const navItems: NavItem[] = [
     label: '8.00 Gestion des Stocks',
     icon: <Package size={20} />,
     description: 'Inventaire Permanent'
-  },
-  {
-    path: '/accounting/securities',
-    label: '9.00 Gestion des Titres',
-    icon: <TrendingUp size={20} />,
-    description: 'Valeurs de marché'
   },
   {
     path: '/accounting/fixed-assets',
