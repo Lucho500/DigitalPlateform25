@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  FileText, Users, CreditCard, Bank, BarChart, Calculator,
-  BookOpen, Archive, Package, Briefcase, HelpCircle,
-  Download, Upload, Plus, Search, Filter
-} from 'lucide-react';
+import { FileText, Users, CreditCard, Ban as Bank, BarChart, Calculator, BookOpen, Archive, Package, Briefcase, HelpCircle, Download, Upload, Plus, Search, Filter } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
