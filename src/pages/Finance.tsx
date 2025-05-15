@@ -3,7 +3,8 @@ import {
   Search, Filter, Plus, Download, Upload, ArrowUpRight, 
   ArrowDownRight, FileText, Check, X, AlertCircle, 
   CreditCard, Building2, Wallet, DollarSign, Receipt,
-  FileSpreadsheet, Calendar, Clock, CheckCircle2
+  FileSpreadsheet, Calendar, Clock, CheckCircle2, Send,
+  FileCheck, ArrowRight, FileInput, BellRing
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -23,6 +24,135 @@ const tabs: TabProps[] = [
   { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> }
 ];
 
+// Interfaces for clients section
+interface Invoice {
+  id: string;
+  number: string;
+  client: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  status: 'draft' | 'sent' | 'paid' | 'overdue';
+}
+
+interface OpenItem {
+  id: string;
+  reference: string;
+  client: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  remainingAmount: number;
+  status: 'open' | 'partial' | 'overdue';
+}
+
+// Interfaces for suppliers section
+interface SupplierInvoice {
+  id: string;
+  number: string;
+  supplier: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  status: 'pending' | 'approved' | 'paid' | 'rejected';
+}
+
+interface PaymentProposal {
+  id: string;
+  supplier: string;
+  invoices: string[];
+  amount: number;
+  dueDate: string;
+  status: 'draft' | 'approved' | 'processed';
+}
+
+// Mock data for clients
+const mockInvoices: Invoice[] = [
+  {
+    id: '1',
+    number: 'FAC-2025-001',
+    client: 'Tech Solutions',
+    date: '2025-04-15',
+    dueDate: '2025-05-15',
+    amount: 12500,
+    status: 'sent'
+  },
+  {
+    id: '2',
+    number: 'FAC-2025-002',
+    client: 'Digital Services',
+    date: '2025-04-14',
+    dueDate: '2025-05-14',
+    amount: 8750,
+    status: 'paid'
+  }
+];
+
+const mockOpenItems: OpenItem[] = [
+  {
+    id: '1',
+    reference: 'FAC-2025-001',
+    client: 'Tech Solutions',
+    date: '2025-04-15',
+    dueDate: '2025-05-15',
+    amount: 12500,
+    remainingAmount: 12500,
+    status: 'open'
+  },
+  {
+    id: '2',
+    reference: 'FAC-2025-002',
+    client: 'Digital Services',
+    date: '2025-04-14',
+    dueDate: '2025-05-14',
+    amount: 8750,
+    remainingAmount: 0,
+    status: 'partial'
+  }
+];
+
+// Mock data for suppliers
+const mockSupplierInvoices: SupplierInvoice[] = [
+  {
+    id: '1',
+    number: 'FSUP-2025-001',
+    supplier: 'Office Supplies Co',
+    date: '2025-04-15',
+    dueDate: '2025-05-15',
+    amount: 2500,
+    status: 'pending'
+  },
+  {
+    id: '2',
+    number: 'FSUP-2025-002',
+    supplier: 'IT Services Ltd',
+    date: '2025-04-14',
+    dueDate: '2025-05-14',
+    amount: 4800,
+    status: 'approved'
+  }
+];
+
+const mockPaymentProposals: PaymentProposal[] = [
+  {
+    id: '1',
+    supplier: 'Office Supplies Co',
+    invoices: ['FSUP-2025-001'],
+    amount: 2500,
+    dueDate: '2025-05-15',
+    status: 'draft'
+  },
+  {
+    id: '2',
+    supplier: 'IT Services Ltd',
+    invoices: ['FSUP-2025-002'],
+    amount: 4800,
+    dueDate: '2025-05-14',
+    status: 'approved'
+  }
+];
+
+// Bank reconciliation interfaces and data
 interface Transaction {
   id: string;
   date: string;
@@ -32,6 +162,17 @@ interface Transaction {
   type: 'debit' | 'credit';
   status: 'pending' | 'matched' | 'unmatched';
   matchedWith?: string;
+}
+
+interface AccountingEntry {
+  id: string;
+  date: string;
+  journal: string;
+  account: string;
+  description: string;
+  debit: number;
+  credit: number;
+  status: 'draft' | 'posted' | 'reconciled';
 }
 
 const mockTransactions: Transaction[] = [
@@ -53,28 +194,8 @@ const mockTransactions: Transaction[] = [
     amount: 3500.00,
     type: 'credit',
     status: 'pending'
-  },
-  {
-    id: '3',
-    date: '2025-04-13',
-    description: 'Prélèvement automatique',
-    reference: 'PRE-2025041303',
-    amount: 450.00,
-    type: 'debit',
-    status: 'unmatched'
   }
 ];
-
-interface AccountingEntry {
-  id: string;
-  date: string;
-  journal: string;
-  account: string;
-  description: string;
-  debit: number;
-  credit: number;
-  status: 'draft' | 'posted' | 'reconciled';
-}
 
 const mockAccountingEntries: AccountingEntry[] = [
   {
@@ -100,9 +221,11 @@ const mockAccountingEntries: AccountingEntry[] = [
 ];
 
 export const Finance: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('bank_reconciliation');
+  const [activeTab, setActiveTab] = useState<TabType>('clients');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReconciliationType, setSelectedReconciliationType] = useState<'suppliers_customers' | 'accounting'>('suppliers_customers');
+  const [activeClientSection, setActiveClientSection] = useState<'invoices' | 'open_items' | 'reminders'>('invoices');
+  const [activeSupplierSection, setActiveSupplierSection] = useState<'entry' | 'payment_proposal' | 'payment' | 'open_items'>('entry');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -121,19 +244,691 @@ export const Finance: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'matched':
-      case 'reconciled':
-        return <Badge variant="success">Rapproché</Badge>;
-      case 'pending':
       case 'draft':
+        return <Badge variant="warning">Brouillon</Badge>;
+      case 'sent':
+        return <Badge variant="info">Envoyée</Badge>;
+      case 'paid':
+        return <Badge variant="success">Payée</Badge>;
+      case 'overdue':
+        return <Badge variant="error">En retard</Badge>;
+      case 'open':
+        return <Badge variant="info">Ouvert</Badge>;
+      case 'partial':
+        return <Badge variant="warning">Partiel</Badge>;
+      case 'pending':
         return <Badge variant="warning">En attente</Badge>;
+      case 'approved':
+        return <Badge variant="success">Approuvé</Badge>;
+      case 'rejected':
+        return <Badge variant="error">Rejeté</Badge>;
+      case 'processed':
+        return <Badge variant="info">Traité</Badge>;
+      case 'matched':
+        return <Badge variant="success">Rapproché</Badge>;
       case 'unmatched':
         return <Badge variant="error">Non rapproché</Badge>;
       case 'posted':
         return <Badge variant="info">Comptabilisé</Badge>;
+      case 'reconciled':
+        return <Badge variant="success">Rapproché</Badge>;
       default:
         return null;
     }
+  };
+
+  const renderClientsTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <Button variant="primary" leftIcon={<Plus size={16} />}>
+            Nouvelle facture
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex space-x-2">
+              <Button
+                variant={activeClientSection === 'invoices' ? 'primary' : 'ghost'}
+                onClick={() => setActiveClientSection('invoices')}
+              >
+                Factures
+              </Button>
+              <Button
+                variant={activeClientSection === 'open_items' ? 'primary' : 'ghost'}
+                onClick={() => setActiveClientSection('open_items')}
+              >
+                Postes ouverts
+              </Button>
+              <Button
+                variant={activeClientSection === 'reminders' ? 'primary' : 'ghost'}
+                onClick={() => setActiveClientSection('reminders')}
+              >
+                Rappels
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {activeClientSection === 'invoices' && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Numéro
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Client
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Échéance
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Montant
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Statut
+                      </th>
+                      <th className="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {mockInvoices.map((invoice) => (
+                      <tr 
+                        key={invoice.id}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {invoice.number}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {invoice.client}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(invoice.date)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(invoice.dueDate)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                          {formatCurrency(invoice.amount)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          {getStatusBadge(invoice.status)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex space-x-2 justify-end">
+                            <Button variant="ghost" size="sm" leftIcon={<FileCheck size={16} />}>
+                              Voir
+                            </Button>
+                            <Button variant="ghost" size="sm" leftIcon={<Send size={16} />}>
+                              Envoyer
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {activeClientSection === 'open_items' && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Référence
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Client
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Montant
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Reste à payer
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Statut
+                      </th>
+                      <th className="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {mockOpenItems.map((item) => (
+                      <tr 
+                        key={item.id}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {item.reference}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {item.client}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(item.date)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                          {formatCurrency(item.amount)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-right font-medium text-red-600 dark:text-red-400">
+                          {formatCurrency(item.remainingAmount)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          {getStatusBadge(item.status)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <Button variant="ghost" size="sm" leftIcon={<ArrowRight size={16} />}>
+                            Détails
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {activeClientSection === 'reminders' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">Niveau 1</h3>
+                          <p className="text-2xl font-bold mt-2">12</p>
+                        </div>
+                        <BellRing className="text-yellow-500" size={24} />
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full mt-4">
+                        Voir la liste
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">Niveau 2</h3>
+                          <p className="text-2xl font-bold mt-2">5</p>
+                        </div>
+                        <BellRing className="text-orange-500" size={24} />
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full mt-4">
+                        Voir la liste
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">Niveau 3</h3>
+                          <p className="text-2xl font-bold mt-2">2</p>
+                        </div>
+                        <BellRing className="text-red-500" size={24} />
+                      </div>
+                      <Button variant="outline" size="sm" className="w-full mt-4">
+                        Voir la liste
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Configuration des rappels</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <h4 className="font-medium mb-2">Niveau 1 - Amiable</h4>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Envoyé 15 jours après l'échéance
+                        </p>
+                        <Button variant="outline" size="sm">
+                          Modifier le modèle
+                        </Button>
+                      </div>
+
+                      <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <h4 className="font-medium mb-2">Niveau 2 - Mise en demeure</h4>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Envoyé 30 jours après l'échéance
+                        </p>
+                        <Button variant="outline" size="sm">
+                          Modifier le modèle
+                        </Button>
+                      </div>
+
+                      <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <h4 className="font-medium mb-2">Niveau 3 - Contentieux</h4>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Envoyé 45 jours après l'échéance
+                        </p>
+                        <Button variant="outline" size="sm">
+                          Modifier le modèle
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderSuppliersTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <Button variant="primary" leftIcon={<Plus size={16} />}>
+            Nouvelle facture
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex space-x-2">
+              <Button
+                variant={activeSupplierSection === 'entry' ? 'primary' : 'ghost'}
+                onClick={() => setActiveSupplierSection('entry')}
+              >
+                Saisie
+              </Button>
+              <Button
+                variant={activeSupplierSection === 'payment_proposal' ? 'primary' : 'ghost'}
+                onClick={() => setActiveSupplierSection('payment_proposal')}
+              >
+                Proposition de paiement
+              </Button>
+              <Button
+                variant={activeSupplierSection === 'payment' ? 'primary' : 'ghost'}
+                onClick={() => setActiveSupplierSection('payment')}
+              >
+                Mise au paiement
+              </Button>
+              <Button
+                variant={activeSupplierSection === 'open_items' ? 'primary' : 'ghost'}
+                onClick={() => setActiveSupplierSection('open_items')}
+              >
+                Postes ouverts
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {activeSupplierSection === 'entry' && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Numéro
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Fournisseur
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Échéance
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Montant
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Statut
+                      </th>
+                      <th className="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {mockSupplierInvoices.map((invoice) => (
+                      <tr 
+                        key={invoice.id}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {invoice.number}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                          {invoice.supplier}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(invoice.date)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(invoice.dueDate)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                          {formatCurrency(invoice.amount)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          {getStatusBadge(invoice.status)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex space-x-2 justify-end">
+                            <Button variant="ghost" size="sm" leftIcon={<FileCheck size={16} />}>
+                              Voir
+                            </Button>
+                            {invoice.status === 'pending' && (
+                              <Button variant="ghost" size="sm" leftIcon={<Check size={16} />}>
+                                Approuver
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {activeSupplierSection === 'payment_proposal' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">À payer</p>
+                          <p className="text-2xl font-semibold mt-1">45 000 €</p>
+                        </div>
+                        <div className="p-2 bg-red-100 dark:bg-red-900 rounded-full">
+                          <ArrowUpRight className="text-red-500" size={24} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Échéances proches</p>
+                          <p className="text-2xl font-semibold mt-1">12</p>
+                        </div>
+                        <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                          <Clock className="text-yellow-500" size={24} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Propositions</p>
+                          <p className="text-2xl font-semibold mt-1">3</p>
+                        </div>
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                          <FileText className="text-blue-500" size={24} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200 dark:border-gray-700">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Fournisseur
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Factures
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Montant
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Échéance
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Statut
+                        </th>
+                        <th className="px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {mockPaymentProposals.map((proposal) => (
+                        <tr 
+                          key={proposal.id}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                            {proposal.supplier}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            {proposal.invoices.join(', ')}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                            {formatCurrency(proposal.amount)}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            {formatDate(proposal.dueDate)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-center">
+                            {getStatusBadge(proposal.status)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex space-x-2 justify-end">
+                              {proposal.status === 'draft' && (
+                                <>
+                                  <Button variant="ghost" size="sm" leftIcon={<Check size={16} />}>
+                                    Approuver
+                                  </Button>
+                                  <Button variant="ghost" size="sm" leftIcon={<X size={16} />}>
+                                    Rejeter
+                                  </Button>
+                                </>
+                              )}
+                              {proposal.status === 'approved' && (
+                                <Button variant="primary" size="sm" leftIcon={<Send size={16} />}>
+                                  Mettre au paiement
+                                </Button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {activeSupplierSection === 'payment' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <h3 className="font-medium mb-4">Fichier de paiement</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Format
+                          </label>
+                          <select className="w-full rounded-lg border-gray-300 dark:border-gray-600">
+                            <option>SEPA</option>
+                            <option>ISO 20022</option>
+                            <option>Autre format</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Date d'exécution
+                          </label>
+                          <input
+                            type="date"
+                            className="w-full rounded-lg border-gray-300 dark:border-gray-600"
+                          />
+                        </div>
+                        <Button variant="primary" fullWidth>
+                          Générer le fichier
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <h3 className="font-medium mb-4">Historique des paiements</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                          <div>
+                            <p className="font-medium">SEPA_20250415.xml</p>
+                            <p className="text-sm text-gray-500">15/04/2025</p>
+                          </div>
+                          <Button variant="ghost" size="sm" leftIcon={<Download size={16} />}>
+                            Télécharger
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                          <div>
+                            <p className="font-medium">SEPA_20250401.xml</p>
+                            <p className="text-sm text-gray-500">01/04/2025</p>
+                          </div>
+                          <Button variant="ghost" size="sm" leftIcon={<Download size={16} />}>
+                            Télécharger
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Paiements en attente</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200 dark:border-gray-700">
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Fournisseur
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Référence
+                            </th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Montant
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Date paiement
+                            </th>
+                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Mode
+                            </th>
+                            <th className="px-4 py-3"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                              Aucun paiement en attente
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeSupplierSection === 'open_items' && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Fournisseur
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Facture
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Montant
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Échéance
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Statut
+                      </th>
+                      <th className="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                        Aucun poste ouvert
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   const renderBankReconciliation = () => {
@@ -407,6 +1202,8 @@ export const Finance: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent className="p-6">
+          {activeTab === 'clients' && renderClientsTab()}
+          {activeTab === 'suppliers' && renderSuppliersTab()}
           {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
         </CardContent>
       </Card>
