@@ -28,55 +28,55 @@ const navItems: NavItem[] = [
   },
   {
     path: '/accounting/bank-reconciliation',
-    label: 'Rapprochement Bancaire',
+    label: '3.00 Rapprochement Bancaire',
     icon: <Bank size={20} />,
     description: 'Acquittement et comptabilisation'
   },
   {
     path: '/accounting/interim-closing',
-    label: 'Clôture Intermédiaire',
+    label: '4.00 Clôture Intermédiaire',
     icon: <FileText size={20} />,
     description: 'Reporting périodique'
   },
   {
     path: '/accounting/analytics',
-    label: 'Compta Analytique',
+    label: '5.00 Compta Analytique',
     icon: <PieChart size={20} />,
     description: 'Analyse des coûts'
   },
   {
     path: '/accounting/annual-closing',
-    label: 'Clôture Annuelle',
+    label: '6.00 Clôture Annuelle',
     icon: <BookOpen size={20} />,
     description: 'États financiers et documentation'
   },
   {
     path: '/accounting/payroll-import',
-    label: 'Import Écritures Salaire',
+    label: '7.00 Import Écritures Salaire',
     icon: <FileSpreadsheet size={20} />,
     description: 'Intégration comptable des salaires'
   },
   {
     path: '/accounting/inventory',
-    label: 'Gestion des Stocks',
+    label: '8.00 Gestion des Stocks',
     icon: <Package size={20} />,
     description: 'Inventaire Permanent'
   },
   {
     path: '/accounting/securities',
-    label: 'Gestion des Titres',
+    label: '9.00 Gestion des Titres',
     icon: <TrendingUp size={20} />,
     description: 'Valeurs de marché'
   },
   {
     path: '/accounting/fixed-assets',
-    label: 'Gestion des Immos',
+    label: '10.00 Gestion des Immos',
     icon: <Building2 size={20} />,
     description: 'Gestion des immobilisations'
   },
   {
     path: '/accounting/audit-support',
-    label: 'Support Audit',
+    label: '11.00 Support Audit',
     icon: <Headphones size={20} />,
     description: 'Support à l\'audit'
   }
