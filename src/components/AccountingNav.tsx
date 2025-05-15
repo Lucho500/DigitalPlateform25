@@ -16,13 +16,13 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     path: '/accounting/clients',
-    label: 'Clients',
+    label: '1.00 Clients',
     icon: <Users size={20} />,
     description: 'Factures, offres et gestion des rappels'
   },
   {
     path: '/accounting/suppliers',
-    label: 'Fournisseurs',
+    label: '2.00 Fournisseurs',
     icon: <CreditCard size={20} />,
     description: 'Saisie et paiements fournisseurs'
   },
