@@ -4,13 +4,15 @@ import {
   ArrowDownRight, FileText, Check, X, AlertCircle, 
   CreditCard, Building2, Wallet, DollarSign, Receipt,
   FileSpreadsheet, Calendar, Clock, CheckCircle2, Send,
-  FileCheck, ArrowRight, FileInput, BellRing
+  FileCheck, ArrowRight, FileInput, BellRing, BarChart2,
+  PieChart, TrendingUp, FileArchive, Calculator
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-type TabType = 'clients' | 'suppliers' | 'bank_reconciliation';
+type TabType = 'clients' | 'suppliers' | 'bank_reconciliation' | 'interim_closing';
 
 interface TabProps {
   id: TabType;
@@ -21,10 +23,10 @@ interface TabProps {
 const tabs: TabProps[] = [
   { id: 'clients', label: 'Clients', icon: <Building2 size={20} /> },
   { id: 'suppliers', label: 'Fournisseurs', icon: <Receipt size={20} /> },
-  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> }
+  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> },
+  { id: 'interim_closing', label: 'Clôture Intermédiaire', icon: <FileArchive size={20} /> }
 ];
 
-// Interfaces for clients section
 interface Invoice {
   id: string;
   number: string;
@@ -46,7 +48,6 @@ interface OpenItem {
   status: 'open' | 'partial' | 'overdue';
 }
 
-// Interfaces for suppliers section
 interface SupplierInvoice {
   id: string;
   number: string;
@@ -66,7 +67,6 @@ interface PaymentProposal {
   status: 'draft' | 'approved' | 'processed';
 }
 
-// Mock data for clients
 const mockInvoices: Invoice[] = [
   {
     id: '1',
@@ -111,7 +111,6 @@ const mockOpenItems: OpenItem[] = [
   }
 ];
 
-// Mock data for suppliers
 const mockSupplierInvoices: SupplierInvoice[] = [
   {
     id: '1',
@@ -152,7 +151,6 @@ const mockPaymentProposals: PaymentProposal[] = [
   }
 ];
 
-// Bank reconciliation interfaces and data
 interface Transaction {
   id: string;
   date: string;
@@ -219,6 +217,38 @@ const mockAccountingEntries: AccountingEntry[] = [
     status: 'draft'
   }
 ];
+
+const mockPerformanceData = [
+  { month: 'Jan', revenue: 150000, expenses: 120000, profit: 30000 },
+  { month: 'Fév', revenue: 165000, expenses: 125000, profit: 40000 },
+  { month: 'Mar', revenue: 180000, expenses: 130000, profit: 50000 },
+  { month: 'Avr', revenue: 175000, expenses: 128000, profit: 47000 },
+  { month: 'Mai', revenue: 190000, expenses: 135000, profit: 55000 },
+  { month: 'Jun', revenue: 195000, expenses: 140000, profit: 55000 }
+];
+
+const mockKPIs = {
+  revenue: {
+    current: 195000,
+    previous: 180000,
+    change: 8.33
+  },
+  expenses: {
+    current: 140000,
+    previous: 130000,
+    change: 7.69
+  },
+  profit: {
+    current: 55000,
+    previous: 50000,
+    change: 10
+  },
+  margin: {
+    current: 28.2,
+    previous: 27.8,
+    change: 1.44
+  }
+};
 
 export const Finance: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('clients');
@@ -1171,42 +1201,172 @@ export const Finance: React.FC = () => {
     );
   };
 
-  return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Finance</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Gestion des opérations financières
-          </p>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-          <div className="flex space-x-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-[#0046AD] text-white'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
+  const renderInterimClosing = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
           </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          {activeTab === 'clients' && renderClientsTab()}
-          {activeTab === 'suppliers' && renderSuppliersTab()}
-          {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
+          <div className="flex space-x-2">
+            <Button variant="outline" leftIcon={<Download size={16} />}>
+              Exporter
+            </Button>
+            <Button variant="primary" leftIcon={<Calculator size={16} />}>
+              Calculer
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Chiffre d'affaires</p>
+                  <p className="text-2xl font-semibold mt-1">{formatCurrency(mockKPIs.revenue.current)}</p>
+                  <div className={`flex items-center mt-2 ${
+                    mockKPIs.revenue.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {mockKPIs.revenue.change >= 0 ? (
+                      <ArrowUpRight size={16} />
+                    ) : (
+                      <ArrowDownRight size={16} />
+                    )}
+                    <span className="ml-1">{mockKPIs.revenue.change}%</span>
+                  </div>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <TrendingUp className="text-blue-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Charges</p>
+                  <p className="text-2xl font-semibold mt-1">{formatCurrency(mockKPIs.expenses.current)}</p>
+                  <div className={`flex items-center mt-2 ${
+                    mockKPIs.expenses.change <= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {mockKPIs.expenses.change <= 0 ? (
+                      <ArrowDownRight size={16} />
+                    ) : (
+                      <ArrowUpRight size={16} />
+                    )}
+                    <span className="ml-1">{mockKPIs.expenses.change}%</span>
+                  </div>
+                </div>
+                <div className="p-2 bg-red-100 dark:bg-red-900 rounded-full">
+                  <ArrowDownRight className="text-red-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Résultat</p>
+                  <p className="text-2xl font-semibold mt-1">{formatCurrency(mockKPIs.profit.current)}</p>
+                  <div className={`flex items-center mt-2 ${
+                    mockKPIs.profit.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {mockKPIs.profit.change >= 0 ? (
+                      <ArrowUpRight size={16} />
+                    ) : (
+                      <ArrowDownRight size={16} />
+                    )}
+                    <span className="ml-1">{mockKPIs.profit.change}%</span>
+                  </div>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <BarChart2 className="text-green-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Marge</p>
+                  <p className="text-2xl font-semibold mt-1">{mockKPIs.margin.current}%</p>
+                  <div className={`flex items-center mt-2 ${
+                    mockKPIs.margin.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {mockKPIs.margin.change >= 0 ? (
+                      <ArrowUpRight size={16} />
+                    ) : (
+                      <ArrowDownRight size={16} />
+                    )}
+                    <span className="ml-1">{mockKPIs.margin.change}%</span>
+                  </div>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <PieChart className="text-purple-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance financière</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stackId="1" 
+                      stroke="#0046AD" 
+                      fill="#0046AD" 
+                      fillOpacity={0.6}
+                      name="CA"
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="expenses" 
+                      stackId="2" 
+                      stroke="#FF6B35" 
+                      fill="#FF6B35" 
+                      fillOpacity={0.6}
+                      name="Charges"
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="profit" 
+                      stackId="3" 
+                      stroke="#00A3A1" 
+                      fill="#00A3A1" 
+                      fillOpacity={0.6}
+                      name="Résultat"
+                    />
+                  </AreaChart>
+                </Respon
