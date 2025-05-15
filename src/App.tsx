@@ -18,6 +18,7 @@ import { InterimClosing } from './pages/Accounting/InterimClosing';
 import { AccountingAnalytics } from './pages/Accounting/Analytics';
 import { AnnualClosing } from './pages/Accounting/AnnualClosing';
 import { PayrollImport } from './pages/Accounting/PayrollImport';
+import { Inventory } from './pages/Accounting/Inventory';
 import { FixedAssets } from './pages/Accounting/FixedAssets';
 import { AuditSupport } from './pages/Accounting/AuditSupport';
 
@@ -43,6 +44,7 @@ function App() {
             <Route path="analytics" element={<AccountingAnalytics />} />
             <Route path="annual-closing" element={<AnnualClosing />} />
             <Route path="payroll-import" element={<PayrollImport />} />
+            <Route path="inventory" element={<Inventory />} />
             <Route path="fixed-assets" element={<FixedAssets />} />
             <Route path="audit-support" element={<AuditSupport />} />
             <Route index element={<Navigate to="clients" replace />} />
