@@ -4,7 +4,7 @@ import {
   BarChart3, FileText, Home, MessageSquare, PieChart, Settings, 
   Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen, 
   FileSpreadsheet, Clock, Receipt, FolderOpen, Building2, Calendar,
-  CheckSquare
+  CheckSquare, Calculator
 } from 'lucide-react';
 import { MenuItem } from '../types';
 
@@ -18,11 +18,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const menuItems: MenuItem[] = [
     { name: 'Tableau de bord', path: '/', icon: 'Home' },
     { name: 'Documents', path: '/documents', icon: 'FileText' },
-    { name: 'Clients', path: '/clients', icon: 'Users' },
-    { name: 'Fournisseurs', path: '/suppliers', icon: 'CreditCard' },
-    { name: 'Rapprochement', path: '/bank-reconciliation', icon: 'Bank' },
-    { name: 'Clôture', path: '/interim-closing', icon: 'BookOpen' },
-    { name: 'Reporting', path: '/interim-reporting', icon: 'FileSpreadsheet' },
+    { name: 'Comptabilité', path: '/accounting/clients', icon: 'Calculator' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
     { name: 'Administratif', path: '/administrative', icon: 'Building2' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
@@ -36,6 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     switch (iconName) {
       case 'Home': return <Home size={20} />;
       case 'FileText': return <FileText size={20} />;
+      case 'Calculator': return <Calculator size={20} />;
       case 'Users': return <Users size={20} />;
       case 'CreditCard': return <CreditCard size={20} />;
       case 'Bank': return <Bank size={20} />;
@@ -70,7 +67,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link
                 to={item.path}
                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  location.pathname === item.path 
+                  location.pathname === item.path || 
+                  (item.path.includes('/accounting') && location.pathname.includes('/accounting'))
                     ? 'bg-white text-[#0046AD]' 
                     : 'text-white hover:bg-[#003580]'
                 }`}
