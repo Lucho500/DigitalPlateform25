@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Clock, Receipt, FolderOpen, Building2, Calendar, CheckSquare,
-  Search, Filter, Plus, Download, Eye, FileText, Upload, MoreVertical,
-  Car, Bank, Tool, FileCheck, Mail, MapPin
-} from 'lucide-react';
+import { Clock, Receipt, FolderOpen, Building2, Calendar, CheckSquare, Search, Filter, Plus, Download, Eye, FileText, Upload, MoreVertical, Car, Ban as Bank, PenTool as Tool, FileCheck, Mail, MapPin } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
