@@ -14,6 +14,7 @@ import { Experts } from './pages/Experts';
 import { Declarations } from './pages/Declarations';
 import { Settings } from './pages/Settings';
 import { Payroll } from './pages/Payroll';
+import { Administrative } from './pages/Administrative';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="experts" element={<Experts />} />
           <Route path="settings" element={<Settings />} />
           <Route path="payroll" element={<Payroll />} />
+          <Route path="administrative" element={<Administrative />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

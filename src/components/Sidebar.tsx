@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, FileText, Home, MessageSquare, PieChart, Settings, Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen, FileSpreadsheet } from 'lucide-react';
+import { 
+  BarChart3, FileText, Home, MessageSquare, PieChart, Settings, 
+  Users, Wallet, DollarSign, CreditCard, Ban as Bank, BookOpen, 
+  FileSpreadsheet, Clock, Receipt, FolderOpen, Building2, Calendar,
+  CheckSquare
+} from 'lucide-react';
 import { MenuItem } from '../types';
 
 interface SidebarProps {
@@ -19,6 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     { name: 'Clôture', path: '/interim-closing', icon: 'BookOpen' },
     { name: 'Reporting', path: '/interim-reporting', icon: 'FileSpreadsheet' },
     { name: 'Salaires', path: '/payroll', icon: 'DollarSign' },
+    { name: 'Administratif', path: '/administrative', icon: 'Building2' },
     { name: 'Déclarations', path: '/declarations', icon: 'PieChart' },
     { name: 'Analytics', path: '/analytics', icon: 'BarChart3' },
     { name: 'Messagerie', path: '/messages', icon: 'MessageSquare' },
@@ -36,6 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       case 'BookOpen': return <BookOpen size={20} />;
       case 'FileSpreadsheet': return <FileSpreadsheet size={20} />;
       case 'DollarSign': return <DollarSign size={20} />;
+      case 'Building2': return <Building2 size={20} />;
       case 'PieChart': return <PieChart size={20} />;
       case 'BarChart3': return <BarChart3 size={20} />;
       case 'MessageSquare': return <MessageSquare size={20} />;
