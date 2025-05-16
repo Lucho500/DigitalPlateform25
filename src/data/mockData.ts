@@ -9,6 +9,45 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const kpis: KPI[] = [
+  {
+    id: '1',
+    title: 'Chiffre d\'affaires',
+    value: 81000,
+    unit: '€',
+    trend: 'up',
+    change: 15.3,
+    period: 'ce mois'
+  },
+  {
+    id: '2',
+    title: 'Trésorerie',
+    value: 145000,
+    unit: '€',
+    trend: 'up',
+    change: 8.2,
+    period: 'ce mois'
+  },
+  {
+    id: '3',
+    title: 'Créances clients',
+    value: 65000,
+    unit: '€',
+    trend: 'down',
+    change: 12.5,
+    period: 'ce mois'
+  },
+  {
+    id: '4',
+    title: 'Dettes fournisseurs',
+    value: 48000,
+    unit: '€',
+    trend: 'up',
+    change: 5.8,
+    period: 'ce mois'
+  }
+];
+
 export const documents: Document[] = [
   {
     id: '1',
