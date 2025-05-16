@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '../utils/formatters';
 import { mockPerformanceData } from '../data/mockData';
-import { Users, Building, Bank, FileCheck } from 'lucide-react';
+import { Users, Building, Ban as Bank, FileCheck } from 'lucide-react';
 
 export const Finance = () => {
   const [activeTab, setActiveTab] = useState('clients');
