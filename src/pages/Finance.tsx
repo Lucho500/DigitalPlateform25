@@ -23,13 +23,31 @@ export default function Finance() {
 
   const renderClientsTab = () => {
     return (
-      <div className="p-4">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Clients</CardTitle>
+            <CardTitle>Gestion des clients</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Contenu du tableau de bord des clients à implémenter</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Clients actifs</h4>
+                  <p className="text-2xl font-bold">127</p>
+                  <p className="text-sm text-gray-500">+12% ce mois</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Chiffre d'affaires</h4>
+                  <p className="text-2xl font-bold">324,500€</p>
+                  <p className="text-sm text-gray-500">+8% ce mois</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Encours client</h4>
+                  <p className="text-2xl font-bold">45,800€</p>
+                  <p className="text-sm text-gray-500">-5% ce mois</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -38,13 +56,31 @@ export default function Finance() {
 
   const renderSuppliersTab = () => {
     return (
-      <div className="p-4">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Fournisseurs</CardTitle>
+            <CardTitle>Gestion des fournisseurs</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Contenu du tableau de bord des fournisseurs à implémenter</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Fournisseurs actifs</h4>
+                  <p className="text-2xl font-bold">84</p>
+                  <p className="text-sm text-gray-500">+5% ce mois</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Dépenses</h4>
+                  <p className="text-2xl font-bold">156,300€</p>
+                  <p className="text-sm text-gray-500">+3% ce mois</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Dettes fournisseurs</h4>
+                  <p className="text-2xl font-bold">28,900€</p>
+                  <p className="text-sm text-gray-500">-8% ce mois</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -53,13 +89,26 @@ export default function Finance() {
 
   const renderBankReconciliation = () => {
     return (
-      <div className="p-4">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Rapprochement bancaire</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Contenu du rapprochement bancaire à implémenter</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Solde comptable</h4>
+                  <p className="text-2xl font-bold">125,400€</p>
+                  <p className="text-sm text-gray-500">Au 15/04/2025</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Solde bancaire</h4>
+                  <p className="text-2xl font-bold">124,800€</p>
+                  <p className="text-sm text-gray-500">Au 15/04/2025</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -68,13 +117,31 @@ export default function Finance() {
 
   const renderInterimClosing = () => {
     return (
-      <div className="p-4">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Clôture intermédiaire</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Contenu de la clôture intermédiaire à implémenter</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Résultat intermédiaire</h4>
+                  <p className="text-2xl font-bold">45,600€</p>
+                  <p className="text-sm text-gray-500">T1 2025</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Variation N-1</h4>
+                  <p className="text-2xl font-bold text-green-500">+12%</p>
+                  <p className="text-sm text-gray-500">vs T1 2024</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Marge brute</h4>
+                  <p className="text-2xl font-bold">32%</p>
+                  <p className="text-sm text-gray-500">+2pts vs N-1</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -83,13 +150,31 @@ export default function Finance() {
 
   const renderAnalyticsTab = () => {
     return (
-      <div className="p-4">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Comptabilité analytique</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Contenu de la comptabilité analytique à implémenter</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Centre de profit A</h4>
+                  <p className="text-2xl font-bold">28,500€</p>
+                  <p className="text-sm text-gray-500">Marge: 25%</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Centre de profit B</h4>
+                  <p className="text-2xl font-bold">34,200€</p>
+                  <p className="text-sm text-gray-500">Marge: 28%</p>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Centre de profit C</h4>
+                  <p className="text-2xl font-bold">22,800€</p>
+                  <p className="text-sm text-gray-500">Marge: 22%</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
