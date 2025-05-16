@@ -4,13 +4,15 @@ import {
   ArrowDownRight, FileText, Check, X, AlertCircle, 
   CreditCard, Building2, Wallet, DollarSign, Receipt,
   FileSpreadsheet, Calendar, Clock, CheckCircle2, Send,
-  FileCheck, ArrowRight, FileInput, BellRing
+  FileCheck, ArrowRight, FileInput, BellRing, BarChart2,
+  TrendingUp, PieChart, FileArchive
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-type TabType = 'clients' | 'suppliers' | 'bank_reconciliation';
+type TabType = 'clients' | 'suppliers' | 'bank_reconciliation' | 'interim_closing';
 
 interface TabProps {
   id: TabType;
@@ -21,7 +23,8 @@ interface TabProps {
 const tabs: TabProps[] = [
   { id: 'clients', label: 'Clients', icon: <Building2 size={20} /> },
   { id: 'suppliers', label: 'Fournisseurs', icon: <Receipt size={20} /> },
-  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> }
+  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> },
+  { id: 'interim_closing', label: 'Clôture Intermédiaire', icon: <FileArchive size={20} /> }
 ];
 
 // Interfaces for clients section
@@ -220,12 +223,86 @@ const mockAccountingEntries: AccountingEntry[] = [
   }
 ];
 
+// New interfaces and mock data for interim closing
+interface FinancialMetric {
+  id: string;
+  name: string;
+  currentValue: number;
+  previousValue: number;
+  change: number;
+  trend: 'up' | 'down' | 'neutral';
+}
+
+interface MonthlyReport {
+  month: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+  margin: number;
+}
+
+interface QuarterlyReport {
+  quarter: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+  margin: number;
+}
+
+const mockMonthlyReports: MonthlyReport[] = [
+  { month: 'Janvier', revenue: 150000, expenses: 95000, profit: 55000, margin: 36.67 },
+  { month: 'Février', revenue: 165000, expenses: 102000, profit: 63000, margin: 38.18 },
+  { month: 'Mars', revenue: 180000, expenses: 108000, profit: 72000, margin: 40.00 }
+];
+
+const mockQuarterlyReports: QuarterlyReport[] = [
+  { quarter: 'Q1 2025', revenue: 495000, expenses: 305000, profit: 190000, margin: 38.38 },
+  { quarter: 'Q4 2024', revenue: 480000, expenses: 298000, profit: 182000, margin: 37.92 },
+  { quarter: 'Q3 2024', revenue: 450000, expenses: 285000, profit: 165000, margin: 36.67 }
+];
+
+const mockMetrics: FinancialMetric[] = [
+  {
+    id: '1',
+    name: 'Chiffre d\'affaires',
+    currentValue: 180000,
+    previousValue: 165000,
+    change: 9.09,
+    trend: 'up'
+  },
+  {
+    id: '2',
+    name: 'Marge brute',
+    currentValue: 72000,
+    previousValue: 63000,
+    change: 14.29,
+    trend: 'up'
+  },
+  {
+    id: '3',
+    name: 'Trésorerie',
+    currentValue: 250000,
+    previousValue: 220000,
+    change: 13.64,
+    trend: 'up'
+  },
+  {
+    id: '4',
+    name: 'BFR',
+    currentValue: 85000,
+    previousValue: 90000,
+    change: -5.56,
+    trend: 'down'
+  }
+];
+
 export const Finance: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('clients');
+  const [activeTab, setActiveTab] = useState<TabType>('interim_closing');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReconciliationType, setSelectedReconciliationType] = useState<'suppliers_customers' | 'accounting'>('suppliers_customers');
   const [activeClientSection, setActiveClientSection] = useState<'invoices' | 'open_items' | 'reminders'>('invoices');
   const [activeSupplierSection, setActiveSupplierSection] = useState<'entry' | 'payment_proposal' | 'payment' | 'open_items'>('entry');
+  const [reportingPeriod, setReportingPeriod] = useState<'monthly' | 'quarterly'>('monthly');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -655,6 +732,7 @@ export const Finance: React.FC = () => {
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex space-x-2 justify-end">
+                
                             <Button variant="ghost" size="sm" leftIcon={<FileCheck size={16} />}>
                               Voir
                             </Button>
@@ -1171,6 +1249,192 @@ export const Finance: React.FC = () => {
     );
   };
 
+  const renderInterimClosing = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <select
+              value={reportingPeriod}
+              onChange={(e) => setReportingPeriod(e.target.value as 'monthly' | 'quarterly')}
+              className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+            >
+              <option value="monthly">Reporting mensuel</option>
+              <option value="quarterly">Reporting trimestriel</option>
+            </select>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <div className="flex space-x-2">
+            <Button variant="outline" leftIcon={<FileSpreadsheet size={16} />}>
+              Export Excel
+            </Button>
+            <Button variant="outline" leftIcon={<FileText size={16} />}>
+              Export PDF
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {mockMetrics.map((metric) => (
+            <Card key={metric.id}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">{metric.name}</p>
+                    <p className="text-2xl font-semibold mt-1">
+                      {formatCurrency(metric.currentValue)}
+                    </p>
+                  </div>
+                  <div className={`p-2 rounded-full ${
+                    metric.trend === 'up' 
+                      ? 'bg-green-100 dark:bg-green-900' 
+                      : 'bg-red-100 dark:bg-red-900'
+                  }`}>
+                    {metric.trend === 'up' ? (
+                      <ArrowUpRight className="text-green-500" size={24} />
+                    ) : (
+                      <ArrowDownRight className="text-red-500" size={24} />
+                    )}
+                  </div>
+                </div>
+                <div className={`mt-2 text-sm ${
+                  metric.trend === 'up' 
+                    ? 'text-green-600 dark:text-green-400' 
+                    : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {metric.trend === 'up' ? '+' : ''}{metric.change}% vs période précédente
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance financière</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={reportingPeriod === 'monthly' ? mockMonthlyReports : mockQuarterlyReports}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey={reportingPeriod === 'monthly' ? 'month' : 'quarter'} 
+                    />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Bar dataKey="revenue" name="CA" fill="#0046AD" />
+                    <Bar dataKey="expenses" name="Charges" fill="#FF6B35" />
+                    <Bar dataKey="profit" name="Résultat" fill="#00A3A1" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Évolution de la marge</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart 
+                    data={reportingPeriod === 'monthly' ? mockMonthlyReports : mockQuarterlyReports}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey={reportingPeriod === 'monthly' ? 'month' : 'quarter'} 
+                    />
+                    <YAxis tickFormatter={(value) => `${value}%`} />
+                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="margin" 
+                      stroke="#0046AD" 
+                      fill="#0046AD" 
+                      fillOpacity={0.2}
+                      name="Marge"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {reportingPeriod === 'monthly' ? 'Détail mensuel' : 'Détail trimestriel'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      {reportingPeriod === 'monthly' ? 'Mois' : 'Trimestre'}
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      CA
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Charges
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Résultat
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Marge
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {(reportingPeriod === 'monthly' ? mockMonthlyReports : mockQuarterlyReports)
+                    .map((report, index) => (
+                    <tr 
+                      key={index}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                        {reportingPeriod === 'monthly' ? report.month : report.quarter}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                        {formatCurrency(report.revenue)}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                        {formatCurrency(report.expenses)}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                        {formatCurrency(report.profit)}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                        {report.margin.toFixed(2)}%
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm" leftIcon={<FileText size={16} />}>
+                          Détails
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -1205,6 +1469,7 @@ export const Finance: React.FC = () => {
           {activeTab === 'clients' && renderClientsTab()}
           {activeTab === 'suppliers' && renderSuppliersTab()}
           {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
+          {activeTab === 'interim_closing' && renderInterimClosing()}
         </CardContent>
       </Card>
     </div>
