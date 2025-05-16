@@ -81,3 +81,48 @@ export interface Task {
 export interface Theme {
   mode: 'light' | 'dark';
 }
+
+export interface Invoice {
+  id: string;
+  number: string;
+  clientId: string;
+  clientName: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  type: 'invoice' | 'quote';
+  items: InvoiceItem[];
+}
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  total: number;
+}
+
+export interface Reminder {
+  id: string;
+  invoiceId: string;
+  clientName: string;
+  level: 1 | 2 | 3;
+  sentDate: string;
+  dueAmount: number;
+  status: 'pending' | 'sent' | 'resolved';
+}
+
+export interface OpenItem {
+  id: string;
+  clientId: string;
+  clientName: string;
+  invoiceNumber: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  remainingAmount: number;
+  status: 'open' | 'partially_paid' | 'closed';
+  lastPaymentDate?: string;
+}
