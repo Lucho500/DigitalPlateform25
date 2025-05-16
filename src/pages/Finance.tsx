@@ -285,3 +285,5 @@ export default function Finance() {
     </div>
   );
 }
+
+export { Finance }
