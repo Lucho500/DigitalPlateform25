@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Building, Bank, FileCheck, FileText, Calculator } from 'lucide-react';
+import { Users, Building, Ban as Bank, FileCheck, FileText, Calculator } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -298,3 +298,5 @@ export default function Finance() {
     </div>
   );
 }
+
+export { Finance }
