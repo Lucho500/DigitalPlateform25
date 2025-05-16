@@ -231,3 +231,122 @@ export const tasks: Task[] = [
     priority: 'medium'
   }
 ];
+
+export const mockInvoices: Invoice[] = [
+  {
+    id: '1',
+    number: 'FAC-2025-001',
+    clientId: '1',
+    clientName: 'Tech Solutions SAS',
+    date: '2025-04-01',
+    dueDate: '2025-04-30',
+    amount: 12500,
+    status: 'sent',
+    type: 'invoice',
+    items: [
+      {
+        id: '1',
+        description: 'Développement application web',
+        quantity: 10,
+        unitPrice: 1000,
+        taxRate: 20,
+        total: 10000
+      },
+      {
+        id: '2',
+        description: 'Maintenance serveurs',
+        quantity: 1,
+        unitPrice: 2500,
+        taxRate: 20,
+        total: 2500
+      }
+    ]
+  },
+  {
+    id: '2',
+    number: 'DEV-2025-002',
+    clientId: '2',
+    clientName: 'Digital Services SARL',
+    date: '2025-04-05',
+    dueDate: '2025-05-05',
+    amount: 8500,
+    status: 'draft',
+    type: 'quote',
+    items: [
+      {
+        id: '1',
+        description: 'Consultation stratégique',
+        quantity: 5,
+        unitPrice: 1500,
+        taxRate: 20,
+        total: 7500
+      },
+      {
+        id: '2',
+        description: 'Rapport d\'analyse',
+        quantity: 1,
+        unitPrice: 1000,
+        taxRate: 20,
+        total: 1000
+      }
+    ]
+  }
+];
+
+export const mockReminders: Reminder[] = [
+  {
+    id: '1',
+    invoiceId: '1',
+    clientName: 'Tech Solutions SAS',
+    level: 1,
+    sentDate: '2025-04-02',
+    dueAmount: 12500,
+    status: 'sent'
+  },
+  {
+    id: '2',
+    invoiceId: '3',
+    clientName: 'Innovation Corp',
+    level: 2,
+    sentDate: '2025-04-01',
+    dueAmount: 15000,
+    status: 'pending'
+  }
+];
+
+export const mockOpenItems: OpenItem[] = [
+  {
+    id: '1',
+    clientId: '1',
+    clientName: 'Tech Solutions SAS',
+    invoiceNumber: 'FAC-2025-001',
+    date: '2025-04-01',
+    dueDate: '2025-04-30',
+    amount: 12500,
+    remainingAmount: 12500,
+    status: 'open'
+  },
+  {
+    id: '2',
+    clientId: '2',
+    clientName: 'Digital Services SARL',
+    invoiceNumber: 'FAC-2025-002',
+    date: '2025-03-15',
+    dueDate: '2025-04-14',
+    amount: 8750,
+    remainingAmount: 0,
+    status: 'closed',
+    lastPaymentDate: '2025-04-10'
+  },
+  {
+    id: '3',
+    clientId: '3',
+    clientName: 'Innovation Corp',
+    invoiceNumber: 'FAC-2025-003',
+    date: '2025-03-01',
+    dueDate: '2025-03-31',
+    amount: 15000,
+    remainingAmount: 15000,
+    status: 'open'
+  }
+];
