@@ -61,6 +61,51 @@ export const Finance = () => {
     );
   };
 
+  const renderSuppliersTab = () => {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Fournisseurs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu du tableau de bord des fournisseurs à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderBankReconciliation = () => {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Rapprochement bancaire</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu du rapprochement bancaire à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderInterimClosing = () => {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Clôture intermédiaire</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu de la clôture intermédiaire à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex space-x-2">
