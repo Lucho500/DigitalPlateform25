@@ -1,53 +1,238 @@
 import React, { useState } from 'react';
-import { 
-  Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, 
-  BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
-  FileText, CheckCircle, AlertCircle, Clock, BookOpen, FileSpreadsheet,
-  ClipboardCheck, FileSignature
-} from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { formatCurrency, formatPercentage } from '../utils/formatters';
+import { mockPerformanceData } from '../data/mockData';
+import { Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-export default function Finance() {
-  const [activeTab, setActiveTab] = useState('annual_closing');
+export const Finance = () => {
+  const [activeTab, setActiveTab] = useState('analytics');
 
   const tabs = [
-    { id: 'clients', label: 'Clients', icon: Users },
-    { id: 'suppliers', label: 'Fournisseurs', icon: Building },
-    { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: Bank },
-    { id: 'interim_closing', label: 'Clôture intermédiaire', icon: FileCheck },
-    { id: 'annual_closing', label: 'Clôture Annuelle', icon: BookOpen },
-    { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator }
+    { id: 'clients', label: 'Clients', icon: 'Users' },
+    { id: 'suppliers', label: 'Fournisseurs', icon: 'Building' },
+    { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: 'Bank' },
+    { id: 'interim_closing', label: 'Clôture intermédiaire', icon: 'FileCheck' },
+    { id: 'analytics', label: 'Comptabilité analytique', icon: 'Calculator' }
   ];
+
+  const analyticsKPIs = [
+    {
+      title: 'Marge brute',
+      value: 47000,
+      change: 8.5,
+      trend: 'up'
+    },
+    {
+      title: 'Coûts directs',
+      value: 28000,
+      change: -2.3,
+      trend: 'down'
+    },
+    {
+      title: 'Coûts indirects',
+      value: 15000,
+      change: 1.2,
+      trend: 'up'
+    },
+    {
+      title: 'Taux de rentabilité',
+      value: 32,
+      change: 3.5,
+      trend: 'up',
+      isPercentage: true
+    }
+  ];
+
+  const costCenters = [
+    { name: 'Production', value: 35 },
+    { name: 'R&D', value: 25 },
+    { name: 'Marketing', value: 20 },
+    { name: 'Administration', value: 15 },
+    { name: 'Support', value: 5 }
+  ];
+
+  const renderAnalyticsTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {analyticsKPIs.map((kpi, index) => (
+            <Card key={index}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">{kpi.title}</p>
+                    <h3 className="text-xl font-semibold mt-1">
+                      {kpi.isPercentage ? formatPercentage(kpi.value) : formatCurrency(kpi.value)}
+                    </h3>
+                  </div>
+                  <div className={`p-2 rounded-full ${
+                    kpi.trend === 'up' 
+                      ? 'bg-green-100 dark:bg-green-900' 
+                      : 'bg-red-100 dark:bg-red-900'
+                  }`}>
+                    {kpi.trend === 'up' 
+                      ? <ArrowUpRight className="text-green-500" size={20} />
+                      : <ArrowDownRight className="text-red-500" size={20} />
+                    }
+                  </div>
+                </div>
+                <div className={`mt-2 text-sm ${
+                  kpi.trend === 'up' 
+                    ? 'text-green-600 dark:text-green-400' 
+                    : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {kpi.change > 0 ? '+' : ''}{kpi.change}% vs mois précédent
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Évolution des marges analytiques</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="analyticsA" 
+                      stroke="#0046AD" 
+                      name="Centre A"
+                      strokeWidth={2}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="analyticsB" 
+                      stroke="#00A3A1" 
+                      name="Centre B"
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Répartition des coûts par centre</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={costCenters}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis tickFormatter={(value) => `${value}%`} />
+                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Bar dataKey="value" fill="#0046AD" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Analyse détaillée des coûts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Coûts directs</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Main d'œuvre</span>
+                      <span className="font-medium">45%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Matières premières</span>
+                      <span className="font-medium">35%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Autres</span>
+                      <span className="font-medium">20%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Coûts indirects</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Administration</span>
+                      <span className="font-medium">40%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Marketing</span>
+                      <span className="font-medium">35%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>R&D</span>
+                      <span className="font-medium">25%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Indicateurs</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Taux d'absorption</span>
+                      <span className="font-medium text-green-500">98%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Écart budget</span>
+                      <span className="font-medium text-green-500">+2.3%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Productivité</span>
+                      <span className="font-medium text-green-500">1.15</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" leftIcon={<PieChart size={16} />}>
+                  Analyse détaillée
+                </Button>
+                <Button variant="outline" leftIcon={<BarChart2 size={16} />}>
+                  Comparaison périodes
+                </Button>
+                <Button variant="primary" leftIcon={<TrendingUp size={16} />}>
+                  Rapport complet
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   const renderClientsTab = () => {
     return (
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Gestion des clients</CardTitle>
+            <CardTitle>Clients</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Clients actifs</h4>
-                  <p className="text-2xl font-bold">127</p>
-                  <p className="text-sm text-gray-500">+12% ce mois</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Chiffre d'affaires</h4>
-                  <p className="text-2xl font-bold">324,500€</p>
-                  <p className="text-sm text-gray-500">+8% ce mois</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Encours client</h4>
-                  <p className="text-2xl font-bold">45,800€</p>
-                  <p className="text-sm text-gray-500">-5% ce mois</p>
-                </div>
-              </div>
-            </div>
+            <p>Contenu du tableau de bord des clients à implémenter</p>
           </CardContent>
         </Card>
       </div>
@@ -59,28 +244,10 @@ export default function Finance() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Gestion des fournisseurs</CardTitle>
+            <CardTitle>Fournisseurs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Fournisseurs actifs</h4>
-                  <p className="text-2xl font-bold">84</p>
-                  <p className="text-sm text-gray-500">+5% ce mois</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Dépenses</h4>
-                  <p className="text-2xl font-bold">156,300€</p>
-                  <p className="text-sm text-gray-500">+3% ce mois</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Dettes fournisseurs</h4>
-                  <p className="text-2xl font-bold">28,900€</p>
-                  <p className="text-sm text-gray-500">-8% ce mois</p>
-                </div>
-              </div>
-            </div>
+            <p>Contenu du tableau de bord des fournisseurs à implémenter</p>
           </CardContent>
         </Card>
       </div>
@@ -95,20 +262,7 @@ export default function Finance() {
             <CardTitle>Rapprochement bancaire</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Solde comptable</h4>
-                  <p className="text-2xl font-bold">125,400€</p>
-                  <p className="text-sm text-gray-500">Au 15/04/2025</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Solde bancaire</h4>
-                  <p className="text-2xl font-bold">124,800€</p>
-                  <p className="text-sm text-gray-500">Au 15/04/2025</p>
-                </div>
-              </div>
-            </div>
+            <p>Contenu du rapprochement bancaire à implémenter</p>
           </CardContent>
         </Card>
       </div>
@@ -123,298 +277,7 @@ export default function Finance() {
             <CardTitle>Clôture intermédiaire</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Résultat intermédiaire</h4>
-                  <p className="text-2xl font-bold">45,600€</p>
-                  <p className="text-sm text-gray-500">T1 2025</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Variation N-1</h4>
-                  <p className="text-2xl font-bold text-green-500">+12%</p>
-                  <p className="text-sm text-gray-500">vs T1 2024</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Marge brute</h4>
-                  <p className="text-2xl font-bold">32%</p>
-                  <p className="text-sm text-gray-500">+2pts vs N-1</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderAnalyticsTab = () => {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Comptabilité analytique</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Centre de profit A</h4>
-                  <p className="text-2xl font-bold">28,500€</p>
-                  <p className="text-sm text-gray-500">Marge: 25%</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Centre de profit B</h4>
-                  <p className="text-2xl font-bold">34,200€</p>
-                  <p className="text-sm text-gray-500">Marge: 28%</p>
-                </div>
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Centre de profit C</h4>
-                  <p className="text-2xl font-bold">22,800€</p>
-                  <p className="text-sm text-gray-500">Marge: 22%</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderAnnualClosing = () => {
-    return (
-      <div className="space-y-6">
-        {/* Écritures */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Écritures de clôture</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <FileText className="text-blue-500" size={24} />
-                    <h4 className="font-medium">Écritures d'inventaire</h4>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>À traiter</span>
-                      <Badge variant="warning">8</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Validées</span>
-                      <Badge variant="success">12</Badge>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Gérer
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <FileSpreadsheet className="text-green-500" size={24} />
-                    <h4 className="font-medium">Écritures de régularisation</h4>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>À traiter</span>
-                      <Badge variant="warning">5</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Validées</span>
-                      <Badge variant="success">15</Badge>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Gérer
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <ClipboardCheck className="text-purple-500" size={24} />
-                    <h4 className="font-medium">Écritures de bilan</h4>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>À traiter</span>
-                      <Badge variant="warning">3</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Validées</span>
-                      <Badge variant="success">18</Badge>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Gérer
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Dossier de clôture */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Dossier de clôture documenté et justifié</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-4">Documents obligatoires</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Balance générale</span>
-                      <Badge variant="success">Validé</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Grand livre</span>
-                      <Badge variant="success">Validé</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Journal centralisateur</span>
-                      <Badge variant="warning">En cours</Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-4">Justificatifs</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Relevés bancaires</span>
-                      <Badge variant="success">Complet</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Factures</span>
-                      <Badge variant="warning">95%</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                      <span>Contrats</span>
-                      <Badge variant="success">Complet</Badge>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* États financiers */}
-        <Card>
-          <CardHeader>
-            <CardTitle>États financiers</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Bilan</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Total Actif</span>
-                      <span className="font-medium">1.2M€</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Passif</span>
-                      <span className="font-medium">1.2M€</span>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Voir détails
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Compte de résultat</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Résultat net</span>
-                      <span className="font-medium text-green-500">+250k€</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Variation N-1</span>
-                      <span className="font-medium text-green-500">+15%</span>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Voir détails
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Annexes</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Sections complétées</span>
-                      <span className="font-medium">18/20</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>État</span>
-                      <Badge variant="warning">En cours</Badge>
-                    </div>
-                    <Button variant="outline" fullWidth className="mt-2">
-                      Compléter
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* PVAGO */}
-        <Card>
-          <CardHeader>
-            <CardTitle>PV d'Assemblée Générale Ordinaire</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <FileSignature className="text-blue-500" size={24} />
-                    <h4 className="font-medium">État du document</h4>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Version</span>
-                      <span className="font-medium">2.1</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Dernière modification</span>
-                      <span className="font-medium">15/04/2025</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Statut</span>
-                      <Badge variant="warning">En révision</Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <ClipboardCheck className="text-green-500" size={24} />
-                    <h4 className="font-medium">Actions requises</h4>
-                  </div>
-                  <div className="space-y-2">
-                    <Button variant="outline" fullWidth>
-                      Modifier le document
-                    </Button>
-                    <Button variant="outline" fullWidth>
-                      Ajouter des annexes
-                    </Button>
-                    <Button variant="primary" fullWidth>
-                      Envoyer pour signature
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <p>Contenu de la clôture intermédiaire à implémenter</p>
           </CardContent>
         </Card>
       </div>
@@ -429,8 +292,8 @@ export default function Finance() {
             key={tab.id}
             variant={activeTab === tab.id ? 'primary' : 'ghost'}
             onClick={() => setActiveTab(tab.id)}
+            leftIcon={tab.icon}
           >
-            <tab.icon size={20} className="mr-2" />
             {tab.label}
           </Button>
         ))}
@@ -440,10 +303,7 @@ export default function Finance() {
       {activeTab === 'suppliers' && renderSuppliersTab()}
       {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
       {activeTab === 'interim_closing' && renderInterimClosing()}
-      {activeTab === 'annual_closing' && renderAnnualClosing()}
       {activeTab === 'analytics' && renderAnalyticsTab()}
     </div>
   );
-}
-
-export { Finance }
+};
