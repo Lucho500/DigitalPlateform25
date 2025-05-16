@@ -126,3 +126,53 @@ export interface OpenItem {
   status: 'open' | 'partially_paid' | 'closed';
   lastPaymentDate?: string;
 }
+
+export interface SupplierInvoice {
+  id: string;
+  number: string;
+  supplierId: string;
+  supplierName: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  status: 'pending' | 'approved' | 'paid' | 'rejected';
+  paymentStatus: 'unpaid' | 'scheduled' | 'paid';
+  paymentDate?: string;
+  reference: string;
+  category: string;
+}
+
+export interface PaymentProposal {
+  id: string;
+  invoiceId: string;
+  supplierName: string;
+  amount: number;
+  dueDate: string;
+  priority: 'high' | 'medium' | 'low';
+  status: 'proposed' | 'approved' | 'rejected';
+  bankAccount: string;
+}
+
+export interface SupplierPayment {
+  id: string;
+  invoiceId: string;
+  supplierName: string;
+  amount: number;
+  scheduledDate: string;
+  status: 'scheduled' | 'processing' | 'completed' | 'failed';
+  method: 'wire' | 'sepa' | 'check';
+  reference: string;
+}
+
+export interface SupplierOpenItem {
+  id: string;
+  supplierId: string;
+  supplierName: string;
+  invoiceNumber: string;
+  date: string;
+  dueDate: string;
+  amount: number;
+  remainingAmount: number;
+  status: 'open' | 'partially_paid' | 'closed';
+  lastPaymentDate?: string;
+}
