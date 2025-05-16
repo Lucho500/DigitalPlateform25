@@ -9,6 +9,45 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const tasks: Task[] = [
+  {
+    id: '1',
+    title: 'Valider les factures en attente',
+    description: 'Examiner et approuver les factures fournisseurs du mois',
+    dueDate: '2025-04-17T17:00:00',
+    priority: 'high',
+    status: 'pending',
+    assignedTo: 'John Doe'
+  },
+  {
+    id: '2',
+    title: 'Préparer la déclaration TVA',
+    description: 'Compiler les données pour la déclaration TVA de mars',
+    dueDate: '2025-04-20T17:00:00',
+    priority: 'medium',
+    status: 'in-progress',
+    assignedTo: 'John Doe'
+  },
+  {
+    id: '3',
+    title: 'Relancer les impayés',
+    description: 'Contacter les clients avec des factures en retard',
+    dueDate: '2025-04-18T12:00:00',
+    priority: 'high',
+    status: 'pending',
+    assignedTo: 'Marie Martin'
+  },
+  {
+    id: '4',
+    title: 'Rapprochement bancaire',
+    description: 'Effectuer le rapprochement bancaire hebdomadaire',
+    dueDate: '2025-04-19T17:00:00',
+    priority: 'low',
+    status: 'not-started',
+    assignedTo: 'John Doe'
+  }
+];
+
 export const meetings: Meeting[] = [
   {
     id: '1',
