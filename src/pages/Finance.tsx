@@ -3,13 +3,14 @@ import {
   Search, Filter, Plus, Download, Upload, ArrowUpRight, 
   ArrowDownRight, FileText, Check, X, AlertCircle, 
   CreditCard, Building2, Wallet, DollarSign, Receipt,
-  FileSpreadsheet, Calendar, Clock, CheckCircle2
+  FileSpreadsheet, Calendar, Clock, CheckCircle2,
+  BarChart2, PieChart, TrendingUp, FileCheck
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 
-type TabType = 'clients' | 'suppliers' | 'bank_reconciliation';
+type TabType = 'clients' | 'suppliers' | 'bank_reconciliation' | 'interim_closing';
 
 interface TabProps {
   id: TabType;
@@ -20,7 +21,8 @@ interface TabProps {
 const tabs: TabProps[] = [
   { id: 'clients', label: 'Clients', icon: <Building2 size={20} /> },
   { id: 'suppliers', label: 'Fournisseurs', icon: <Receipt size={20} /> },
-  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> }
+  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> },
+  { id: 'interim_closing', label: 'Clôture Intermédiaire', icon: <FileCheck size={20} /> }
 ];
 
 interface Transaction {
@@ -99,10 +101,55 @@ const mockAccountingEntries: AccountingEntry[] = [
   }
 ];
 
+interface FinancialReport {
+  id: string;
+  period: string;
+  type: 'monthly' | 'quarterly';
+  status: 'draft' | 'in_progress' | 'completed';
+  revenue: number;
+  expenses: number;
+  margin: number;
+  lastUpdate: string;
+}
+
+const mockReports: FinancialReport[] = [
+  {
+    id: '1',
+    period: 'Mars 2025',
+    type: 'monthly',
+    status: 'completed',
+    revenue: 85000,
+    expenses: 55000,
+    margin: 30000,
+    lastUpdate: '2025-04-05'
+  },
+  {
+    id: '2',
+    period: 'Q1 2025',
+    type: 'quarterly',
+    status: 'in_progress',
+    revenue: 245000,
+    expenses: 165000,
+    margin: 80000,
+    lastUpdate: '2025-04-15'
+  },
+  {
+    id: '3',
+    period: 'Février 2025',
+    type: 'monthly',
+    status: 'completed',
+    revenue: 78000,
+    expenses: 52000,
+    margin: 26000,
+    lastUpdate: '2025-03-05'
+  }
+];
+
 export const Finance: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('bank_reconciliation');
+  const [activeTab, setActiveTab] = useState<TabType>('interim_closing');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReconciliationType, setSelectedReconciliationType] = useState<'suppliers_customers' | 'accounting'>('suppliers_customers');
+  const [selectedReportType, setSelectedReportType] = useState<'monthly' | 'quarterly'>('monthly');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -376,6 +423,184 @@ export const Finance: React.FC = () => {
     );
   };
 
+  const renderInterimClosing = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un rapport..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <Button variant="primary" leftIcon={<Plus size={16} />}>
+            Nouveau rapport
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Chiffre d'affaires</p>
+                  <p className="text-2xl font-semibold mt-1">85 000 €</p>
+                  <p className="text-sm text-green-500 flex items-center mt-1">
+                    <ArrowUpRight size={16} className="mr-1" />
+                    +12% vs N-1
+                  </p>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <TrendingUp className="text-blue-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Marge brute</p>
+                  <p className="text-2xl font-semibold mt-1">30 000 €</p>
+                  <p className="text-sm text-green-500 flex items-center mt-1">
+                    <ArrowUpRight size={16} className="mr-1" />
+                    +8% vs N-1
+                  </p>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <PieChart className="text-green-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Taux de marge</p>
+                  <p className="text-2xl font-semibold mt-1">35.3%</p>
+                  <p className="text-sm text-red-500 flex items-center mt-1">
+                    <ArrowDownRight size={16} className="mr-1" />
+                    -2% vs N-1
+                  </p>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <BarChart2 className="text-purple-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex space-x-2">
+              <Button
+                variant={selectedReportType === 'monthly' ? 'primary' : 'ghost'}
+                onClick={() => setSelectedReportType('monthly')}
+              >
+                Reporting mensuel
+              </Button>
+              <Button
+                variant={selectedReportType === 'quarterly' ? 'primary' : 'ghost'}
+                onClick={() => setSelectedReportType('quarterly')}
+              >
+                Reporting trimestriel
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Période
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      CA
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Charges
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Marge
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Mise à jour
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockReports
+                    .filter(report => report.type === selectedReportType)
+                    .map((report) => (
+                      <tr 
+                        key={report.id}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          {report.period}
+                        </td>
+                        <td className="px-4 py-4 text-right text-sm text-gray-900 dark:text-white">
+                          {formatCurrency(report.revenue)}
+                        </td>
+                        <td className="px-4 py-4 text-right text-sm text-gray-900 dark:text-white">
+                          {formatCurrency(report.expenses)}
+                        </td>
+                        <td className="px-4 py-4 text-right text-sm text-gray-900 dark:text-white">
+                          {formatCurrency(report.margin)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-center">
+                          {report.status === 'completed' && (
+                            <Badge variant="success">Terminé</Badge>
+                          )}
+                          {report.status === 'in_progress' && (
+                            <Badge variant="warning">En cours</Badge>
+                          )}
+                          {report.status === 'draft' && (
+                            <Badge variant="default">Brouillon</Badge>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {formatDate(report.lastUpdate)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex space-x-2 justify-end">
+                            <Button variant="ghost" size="sm" leftIcon={<FileText size={16} />}>
+                              Détails
+                            </Button>
+                            <Button variant="ghost" size="sm" leftIcon={<Download size={16} />}>
+                              Export
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -408,8 +633,11 @@ export const Finance: React.FC = () => {
         </CardHeader>
         <CardContent className="p-6">
           {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
+          {activeTab === 'interim_closing' && renderInterimClosing()}
         </CardContent>
       </Card>
     </div>
   );
 };
+
+export { Finance }
