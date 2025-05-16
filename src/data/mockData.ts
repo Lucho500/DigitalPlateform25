@@ -1,5 +1,20 @@
 import { Document, KPI, Meeting, Message, Notification, Task, User } from '../types';
 
+export const mockPerformanceData = [
+  { month: 'Jan', revenue: 75000, expenses: 45000 },
+  { month: 'Fév', revenue: 82000, expenses: 48000 },
+  { month: 'Mar', revenue: 78000, expenses: 46000 },
+  { month: 'Avr', revenue: 85000, expenses: 49000 },
+  { month: 'Mai', revenue: 90000, expenses: 51000 },
+  { month: 'Juin', revenue: 95000, expenses: 53000 },
+  { month: 'Juil', revenue: 88000, expenses: 50000 },
+  { month: 'Août', revenue: 92000, expenses: 52000 },
+  { month: 'Sep', revenue: 98000, expenses: 54000 },
+  { month: 'Oct', revenue: 96000, expenses: 53000 },
+  { month: 'Nov', revenue: 99000, expenses: 55000 },
+  { month: 'Déc', revenue: 105000, expenses: 58000 }
+];
+
 export const currentUser: User = {
   id: '1',
   name: 'Sophie Martin',
