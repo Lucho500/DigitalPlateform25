@@ -1,283 +1,375 @@
 import React, { useState } from 'react';
+import { 
+  Search, Filter, Plus, Download, Upload, ArrowUpRight, 
+  ArrowDownRight, FileText, Check, X, AlertCircle, 
+  CreditCard, Building2, Wallet, DollarSign, Receipt,
+  FileSpreadsheet, Calendar, Clock, CheckCircle2
+} from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { formatCurrency, formatPercentage } from '../utils/formatters';
-import { mockPerformanceData } from '../data/mockData';
-import { Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-export const Finance = () => {
-  const [activeTab, setActiveTab] = useState('analytics');
+type TabType = 'clients' | 'suppliers' | 'bank_reconciliation';
 
-  const tabs = [
-    { id: 'clients', label: 'Clients', icon: 'Users' },
-    { id: 'suppliers', label: 'Fournisseurs', icon: 'Building' },
-    { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: 'Bank' },
-    { id: 'interim_closing', label: 'Clôture intermédiaire', icon: 'FileCheck' },
-    { id: 'analytics', label: 'Comptabilité analytique', icon: 'Calculator' }
-  ];
+interface TabProps {
+  id: TabType;
+  label: string;
+  icon: React.ReactNode;
+}
 
-  const analyticsKPIs = [
-    {
-      title: 'Marge brute',
-      value: 47000,
-      change: 8.5,
-      trend: 'up'
-    },
-    {
-      title: 'Coûts directs',
-      value: 28000,
-      change: -2.3,
-      trend: 'down'
-    },
-    {
-      title: 'Coûts indirects',
-      value: 15000,
-      change: 1.2,
-      trend: 'up'
-    },
-    {
-      title: 'Taux de rentabilité',
-      value: 32,
-      change: 3.5,
-      trend: 'up',
-      isPercentage: true
+const tabs: TabProps[] = [
+  { id: 'clients', label: 'Clients', icon: <Building2 size={20} /> },
+  { id: 'suppliers', label: 'Fournisseurs', icon: <Receipt size={20} /> },
+  { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: <CreditCard size={20} /> }
+];
+
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  reference: string;
+  amount: number;
+  type: 'debit' | 'credit';
+  status: 'pending' | 'matched' | 'unmatched';
+  matchedWith?: string;
+}
+
+const mockTransactions: Transaction[] = [
+  {
+    id: '1',
+    date: '2025-04-15',
+    description: 'Paiement fournisseur XYZ',
+    reference: 'VIR-2025041501',
+    amount: 1250.00,
+    type: 'debit',
+    status: 'matched',
+    matchedWith: 'FAC-2025-123'
+  },
+  {
+    id: '2',
+    date: '2025-04-14',
+    description: 'Règlement client ABC',
+    reference: 'VIR-2025041402',
+    amount: 3500.00,
+    type: 'credit',
+    status: 'pending'
+  },
+  {
+    id: '3',
+    date: '2025-04-13',
+    description: 'Prélèvement automatique',
+    reference: 'PRE-2025041303',
+    amount: 450.00,
+    type: 'debit',
+    status: 'unmatched'
+  }
+];
+
+interface AccountingEntry {
+  id: string;
+  date: string;
+  journal: string;
+  account: string;
+  description: string;
+  debit: number;
+  credit: number;
+  status: 'draft' | 'posted' | 'reconciled';
+}
+
+const mockAccountingEntries: AccountingEntry[] = [
+  {
+    id: '1',
+    date: '2025-04-15',
+    journal: 'BNQ',
+    account: '512000',
+    description: 'Paiement fournisseur',
+    debit: 0,
+    credit: 1250.00,
+    status: 'posted'
+  },
+  {
+    id: '2',
+    date: '2025-04-14',
+    journal: 'BNQ',
+    account: '512000',
+    description: 'Encaissement client',
+    debit: 3500.00,
+    credit: 0,
+    status: 'draft'
+  }
+];
+
+export const Finance: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabType>('bank_reconciliation');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedReconciliationType, setSelectedReconciliationType] = useState<'suppliers_customers' | 'accounting'>('suppliers_customers');
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'matched':
+      case 'reconciled':
+        return <Badge variant="success">Rapproché</Badge>;
+      case 'pending':
+      case 'draft':
+        return <Badge variant="warning">En attente</Badge>;
+      case 'unmatched':
+        return <Badge variant="error">Non rapproché</Badge>;
+      case 'posted':
+        return <Badge variant="info">Comptabilisé</Badge>;
+      default:
+        return null;
     }
-  ];
-
-  const costCenters = [
-    { name: 'Production', value: 35 },
-    { name: 'R&D', value: 25 },
-    { name: 'Marketing', value: 20 },
-    { name: 'Administration', value: 15 },
-    { name: 'Support', value: 5 }
-  ];
-
-  const renderAnalyticsTab = () => {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {analyticsKPIs.map((kpi, index) => (
-            <Card key={index}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">{kpi.title}</p>
-                    <h3 className="text-xl font-semibold mt-1">
-                      {kpi.isPercentage ? formatPercentage(kpi.value) : formatCurrency(kpi.value)}
-                    </h3>
-                  </div>
-                  <div className={`p-2 rounded-full ${
-                    kpi.trend === 'up' 
-                      ? 'bg-green-100 dark:bg-green-900' 
-                      : 'bg-red-100 dark:bg-red-900'
-                  }`}>
-                    {kpi.trend === 'up' 
-                      ? <ArrowUpRight className="text-green-500" size={20} />
-                      : <ArrowDownRight className="text-red-500" size={20} />
-                    }
-                  </div>
-                </div>
-                <div className={`mt-2 text-sm ${
-                  kpi.trend === 'up' 
-                    ? 'text-green-600 dark:text-green-400' 
-                    : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {kpi.change > 0 ? '+' : ''}{kpi.change}% vs mois précédent
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Évolution des marges analytiques</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={mockPerformanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="analyticsA" 
-                      stroke="#0046AD" 
-                      name="Centre A"
-                      strokeWidth={2}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="analyticsB" 
-                      stroke="#00A3A1" 
-                      name="Centre B"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Répartition des coûts par centre</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={costCenters}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => `${value}%`} />
-                    <Tooltip formatter={(value) => `${value}%`} />
-                    <Bar dataKey="value" fill="#0046AD" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Analyse détaillée des coûts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Coûts directs</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Main d'œuvre</span>
-                      <span className="font-medium">45%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Matières premières</span>
-                      <span className="font-medium">35%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Autres</span>
-                      <span className="font-medium">20%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Coûts indirects</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Administration</span>
-                      <span className="font-medium">40%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Marketing</span>
-                      <span className="font-medium">35%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>R&D</span>
-                      <span className="font-medium">25%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Indicateurs</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Taux d'absorption</span>
-                      <span className="font-medium text-green-500">98%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Écart budget</span>
-                      <span className="font-medium text-green-500">+2.3%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Productivité</span>
-                      <span className="font-medium text-green-500">1.15</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" leftIcon={<PieChart size={16} />}>
-                  Analyse détaillée
-                </Button>
-                <Button variant="outline" leftIcon={<BarChart2 size={16} />}>
-                  Comparaison périodes
-                </Button>
-                <Button variant="primary" leftIcon={<TrendingUp size={16} />}>
-                  Rapport complet
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderClientsTab = () => {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Clients</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Contenu du tableau de bord des clients à implémenter</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderSuppliersTab = () => {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Fournisseurs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Contenu du tableau de bord des fournisseurs à implémenter</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
   };
 
   const renderBankReconciliation = () => {
     return (
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Rapprochement bancaire</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Contenu du rapprochement bancaire à implémenter</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <div className="flex space-x-2">
+            <Button variant="outline" leftIcon={<Upload size={16} />}>
+              Importer relevé
+            </Button>
+            <Button variant="primary" leftIcon={<Plus size={16} />}>
+              Nouvelle écriture
+            </Button>
+          </div>
+        </div>
 
-  const renderInterimClosing = () => {
-    return (
-      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Solde bancaire</p>
+                  <p className="text-2xl font-semibold mt-1">125 000,00 €</p>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <CreditCard className="text-blue-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Écritures à rapprocher</p>
+                  <p className="text-2xl font-semibold mt-1">12</p>
+                </div>
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                  <AlertCircle className="text-yellow-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Taux de rapprochement</p>
+                  <p className="text-2xl font-semibold mt-1">85%</p>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <CheckCircle2 className="text-green-500" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
-          <CardHeader>
-            <CardTitle>Clôture intermédiaire</CardTitle>
+          <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+            <div className="flex space-x-2">
+              <Button
+                variant={selectedReconciliationType === 'suppliers_customers' ? 'primary' : 'ghost'}
+                onClick={() => setSelectedReconciliationType('suppliers_customers')}
+              >
+                Acquittement Fournisseurs/Débiteurs
+              </Button>
+              <Button
+                variant={selectedReconciliationType === 'accounting' ? 'primary' : 'ghost'}
+                onClick={() => setSelectedReconciliationType('accounting')}
+              >
+                Comptabilisation
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <p>Contenu de la clôture intermédiaire à implémenter</p>
+            {selectedReconciliationType === 'suppliers_customers' ? (
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200 dark:border-gray-700">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Date
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Référence
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Montant
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Statut
+                        </th>
+                        <th className="px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {mockTransactions.map((transaction) => (
+                        <tr 
+                          key={transaction.id}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {formatDate(transaction.date)}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                            {transaction.description}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            {transaction.reference}
+                          </td>
+                          <td className={`px-4 py-4 text-sm text-right font-medium ${
+                            transaction.type === 'credit' 
+                              ? 'text-green-600 dark:text-green-400'
+                              : 'text-red-600 dark:text-red-400'
+                          }`}>
+                            {formatCurrency(transaction.amount)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-center">
+                            {getStatusBadge(transaction.status)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            {transaction.status === 'pending' && (
+                              <div className="flex space-x-2 justify-end">
+                                <Button variant="ghost" size="sm">
+                                  <Check size={16} className="text-green-500" />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <X size={16} className="text-red-500" />
+                                </Button>
+                              </div>
+                            )}
+                            {transaction.status === 'matched' && (
+                              <span className="text-sm text-gray-500">
+                                {transaction.matchedWith}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200 dark:border-gray-700">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Date
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Journal
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Compte
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Débit
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Crédit
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Statut
+                        </th>
+                        <th className="px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {mockAccountingEntries.map((entry) => (
+                        <tr 
+                          key={entry.id}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {formatDate(entry.date)}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                            {entry.journal}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            {entry.account}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                            {entry.description}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                            {entry.debit > 0 ? formatCurrency(entry.debit) : '-'}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-right font-medium text-gray-900 dark:text-white">
+                            {entry.credit > 0 ? formatCurrency(entry.credit) : '-'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-center">
+                            {getStatusBadge(entry.status)}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            {entry.status === 'draft' && (
+                              <Button variant="ghost" size="sm">
+                                Valider
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -285,25 +377,39 @@ export const Finance = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex space-x-2">
-        {tabs.map((tab) => (
-          <Button
-            key={tab.id}
-            variant={activeTab === tab.id ? 'primary' : 'ghost'}
-            onClick={() => setActiveTab(tab.id)}
-            leftIcon={tab.icon}
-          >
-            {tab.label}
-          </Button>
-        ))}
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Finance</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Gestion des opérations financières
+          </p>
+        </div>
       </div>
 
-      {activeTab === 'clients' && renderClientsTab()}
-      {activeTab === 'suppliers' && renderSuppliersTab()}
-      {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
-      {activeTab === 'interim_closing' && renderInterimClosing()}
-      {activeTab === 'analytics' && renderAnalyticsTab()}
+      <Card>
+        <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+          <div className="flex space-x-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-[#0046AD] text-white'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
+        </CardContent>
+      </Card>
     </div>
   );
 };

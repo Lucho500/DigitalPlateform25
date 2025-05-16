@@ -1,20 +1,5 @@
 import { Document, KPI, Meeting, Message, Notification, Task, User } from '../types';
 
-export const mockPerformanceData = [
-  { month: 'Jan', revenue: 75000, expenses: 45000, margin: 30000, analyticsA: 25000, analyticsB: 20000 },
-  { month: 'Fév', revenue: 82000, expenses: 48000, margin: 34000, analyticsA: 28000, analyticsB: 20000 },
-  { month: 'Mar', revenue: 78000, expenses: 46000, margin: 32000, analyticsA: 26000, analyticsB: 20000 },
-  { month: 'Avr', revenue: 85000, expenses: 49000, margin: 36000, analyticsA: 29000, analyticsB: 20000 },
-  { month: 'Mai', revenue: 90000, expenses: 51000, margin: 39000, analyticsA: 31000, analyticsB: 20000 },
-  { month: 'Juin', revenue: 95000, expenses: 53000, margin: 42000, analyticsA: 33000, analyticsB: 20000 },
-  { month: 'Juil', revenue: 88000, expenses: 50000, margin: 38000, analyticsA: 30000, analyticsB: 20000 },
-  { month: 'Août', revenue: 92000, expenses: 52000, margin: 40000, analyticsA: 32000, analyticsB: 20000 },
-  { month: 'Sep', revenue: 98000, expenses: 54000, margin: 44000, analyticsA: 34000, analyticsB: 20000 },
-  { month: 'Oct', revenue: 96000, expenses: 53000, margin: 43000, analyticsA: 33000, analyticsB: 20000 },
-  { month: 'Nov', revenue: 99000, expenses: 55000, margin: 44000, analyticsA: 34000, analyticsB: 20000 },
-  { month: 'Déc', revenue: 105000, expenses: 58000, margin: 47000, analyticsA: 37000, analyticsB: 20000 }
-];
-
 export const currentUser: User = {
   id: '1',
   name: 'Sophie Martin',
