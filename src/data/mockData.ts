@@ -350,3 +350,94 @@ export const mockOpenItems: OpenItem[] = [
     status: 'open'
   }
 ];
+
+export const mockSupplierInvoices: SupplierInvoice[] = [
+  {
+    id: '1',
+    number: 'FACT-2025-001',
+    supplierId: '1',
+    supplierName: 'Office Supplies Corp',
+    date: '2025-04-01',
+    dueDate: '2025-04-30',
+    amount: 2500,
+    status: 'pending',
+    paymentStatus: 'unpaid',
+    reference: 'PO-2025-001',
+    category: 'Fournitures'
+  },
+  {
+    id: '2',
+    number: 'FACT-2025-002',
+    supplierId: '2',
+    supplierName: 'IT Services SARL',
+    date: '2025-04-05',
+    dueDate: '2025-05-05',
+    amount: 5800,
+    status: 'approved',
+    paymentStatus: 'scheduled',
+    paymentDate: '2025-05-01',
+    reference: 'PO-2025-002',
+    category: 'Services IT'
+  }
+];
+
+export const mockPaymentProposals: PaymentProposal[] = [
+  {
+    id: '1',
+    invoiceId: '1',
+    supplierName: 'Office Supplies Corp',
+    amount: 2500,
+    dueDate: '2025-04-30',
+    priority: 'medium',
+    status: 'proposed',
+    bankAccount: 'FR76 1234 5678 9012 3456 7890 123'
+  },
+  {
+    id: '2',
+    invoiceId: '2',
+    supplierName: 'IT Services SARL',
+    amount: 5800,
+    dueDate: '2025-05-05',
+    priority: 'high',
+    status: 'approved',
+    bankAccount: 'FR76 9876 5432 1098 7654 3210 987'
+  }
+];
+
+export const mockSupplierPayments: SupplierPayment[] = [
+  {
+    id: '1',
+    invoiceId: '2',
+    supplierName: 'IT Services SARL',
+    amount: 5800,
+    scheduledDate: '2025-05-01',
+    status: 'scheduled',
+    method: 'sepa',
+    reference: 'PAY-2025-001'
+  }
+];
+
+export const mockSupplierOpenItems: SupplierOpenItem[] = [
+  {
+    id: '1',
+    supplierId: '1',
+    supplierName: 'Office Supplies Corp',
+    invoiceNumber: 'FACT-2025-001',
+    date: '2025-04-01',
+    dueDate: '2025-04-30',
+    amount: 2500,
+    remainingAmount: 2500,
+    status: 'open'
+  },
+  {
+    id: '2',
+    supplierId: '2',
+    supplierName: 'IT Services SARL',
+    invoiceNumber: 'FACT-2025-002',
+    date: '2025-04-05',
+    dueDate: '2025-05-05',
+    amount: 5800,
+    remainingAmount: 5800,
+    status: 'open'
+  }
+];
