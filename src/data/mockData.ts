@@ -9,6 +9,36 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const meetings: Meeting[] = [
+  {
+    id: '1',
+    title: 'Revue financière mensuelle',
+    date: '2025-04-16T14:00:00',
+    duration: 60,
+    attendees: ['John Doe', 'Marie Martin', 'Pierre Dubois'],
+    status: 'scheduled',
+    location: 'Salle de conférence A'
+  },
+  {
+    id: '2',
+    title: 'Point client Tech Solutions',
+    date: '2025-04-17T10:00:00',
+    duration: 45,
+    attendees: ['John Doe', 'Sophie Bernard'],
+    status: 'confirmed',
+    location: 'Visioconférence'
+  },
+  {
+    id: '3',
+    title: 'Préparation bilan trimestriel',
+    date: '2025-04-18T15:30:00',
+    duration: 90,
+    attendees: ['John Doe', 'Laurent Petit', 'Anne Richard'],
+    status: 'pending',
+    location: 'Salle de réunion B'
+  }
+];
+
 export const kpis: KPI[] = [
   {
     id: '1',
