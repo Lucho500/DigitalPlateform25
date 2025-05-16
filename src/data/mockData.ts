@@ -9,7 +9,40 @@ export const currentUser: User = {
   status: 'online'
 };
 
-// ... (previous mock data)
+export const notifications: Notification[] = [
+  {
+    id: '1',
+    title: 'Nouveau document',
+    message: 'Une nouvelle facture a été ajoutée',
+    type: 'info',
+    date: '2025-04-15T10:30:00',
+    read: false
+  },
+  {
+    id: '2',
+    title: 'Paiement reçu',
+    message: 'Le paiement de la facture FAC-2025-001 a été reçu',
+    type: 'success',
+    date: '2025-04-14T15:45:00',
+    read: true
+  },
+  {
+    id: '3',
+    title: 'Échéance proche',
+    message: 'La déclaration TVA doit être soumise dans 3 jours',
+    type: 'warning',
+    date: '2025-04-13T09:15:00',
+    read: false
+  },
+  {
+    id: '4',
+    title: 'Erreur de traitement',
+    message: 'La synchronisation bancaire a échoué',
+    type: 'error',
+    date: '2025-04-12T16:20:00',
+    read: false
+  }
+];
 
 export const mockBankReconciliations: BankReconciliation[] = [
   {
