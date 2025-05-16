@@ -21,6 +21,81 @@ export default function Finance() {
     { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator }
   ];
 
+  const renderClientsTab = () => {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Clients</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu du tableau de bord des clients à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderSuppliersTab = () => {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Fournisseurs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu du tableau de bord des fournisseurs à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderBankReconciliation = () => {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Rapprochement bancaire</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu du rapprochement bancaire à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderInterimClosing = () => {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Clôture intermédiaire</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu de la clôture intermédiaire à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderAnalyticsTab = () => {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Comptabilité analytique</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Contenu de la comptabilité analytique à implémenter</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   const renderAnnualClosing = () => {
     return (
       <div className="space-y-6">
