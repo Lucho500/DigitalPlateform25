@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { Users, Building, Ban as Bank, FileText, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download, FileCheck, AlertCircle, Clock, BookOpen, FileSpreadsheet, ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, CreditCard, Send, DollarSign, Receipt, Calendar, CheckCircle2, Briefcase, PenTool as Tool, Archive, Box, HardDrive, HelpCircle } from 'lucide-react';
+import { 
+  Users, Building, Ban as Bank, FileText, Calculator, PieChart, BarChart2, TrendingUp, 
+  ArrowUpRight, ArrowDownRight, Download, FileCheck, AlertCircle, Clock, BookOpen, 
+  FileSpreadsheet, ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, CreditCard, 
+  Send, DollarSign, Receipt, Calendar, CheckCircle2, Briefcase, PenTool as Tool, Archive, 
+  Box, HardDrive, HelpCircle, Edit, Trash2, MoreVertical
+} from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { mockInvoices, mockReminders, mockOpenItems } from '../data/mockData';
+import type { Invoice, OpenItem, Reminder } from '../types';
 
 type TabType = 
   | 'clients' 
@@ -57,6 +64,288 @@ const Finance = () => {
     return new Date(date).toLocaleDateString('fr-FR');
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'draft':
+        return <Badge variant="warning">Brouillon</Badge>;
+      case 'sent':
+        return <Badge variant="info">Envoyée</Badge>;
+      case 'paid':
+        return <Badge variant="success">Payée</Badge>;
+      case 'overdue':
+        return <Badge variant="error">En retard</Badge>;
+      case 'cancelled':
+        return <Badge variant="error">Annulée</Badge>;
+      case 'open':
+        return <Badge variant="warning">Ouvert</Badge>;
+      case 'partially_paid':
+        return <Badge variant="info">Partiellement payé</Badge>;
+      case 'closed':
+        return <Badge variant="success">Fermé</Badge>;
+      case 'pending':
+        return <Badge variant="warning">En attente</Badge>;
+      case 'resolved':
+        return <Badge variant="success">Résolu</Badge>;
+      default:
+        return <Badge>{status}</Badge>;
+    }
+  };
+
+  const renderClientContent = () => {
+    switch (clientTab) {
+      case 'invoices':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Plus size={16} />}>
+                  Nouvelle facture
+                </Button>
+                <Button variant="outline" leftIcon={<Plus size={16} />}>
+                  Nouvelle offre
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Numéro
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockInvoices.map((invoice) => (
+                    <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {invoice.number}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {invoice.clientName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(invoice.date)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(invoice.dueDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(invoice.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(invoice.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Voir
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Edit size={16} className="mr-2" />
+                          Modifier
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreVertical size={16} />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'open_items':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Plus size={16} />}>
+                  Nouveau règlement
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Facture
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant total
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Reste à payer
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockOpenItems.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {item.invoiceNumber}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.clientName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(item.date)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(item.dueDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(item.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(item.remainingAmount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(item.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Détails
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreVertical size={16} />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'reminders':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Plus size={16} />}>
+                  Nouveau rappel
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Niveau
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date d'envoi
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant dû
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockReminders.map((reminder) => (
+                    <tr key={reminder.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {reminder.clientName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        Niveau {reminder.level}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(reminder.sentDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(reminder.dueAmount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(reminder.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Voir
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Send size={16} className="mr-2" />
+                          Renvoyer
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreVertical size={16} />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'clients':
@@ -84,8 +373,8 @@ const Finance = () => {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              {/* Existing client content */}
+            <CardContent className="p-6">
+              {renderClientContent()}
             </CardContent>
           </Card>
         );
