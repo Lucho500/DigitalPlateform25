@@ -9,6 +9,41 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const documents: Document[] = [
+  {
+    id: '1',
+    name: 'Facture Client 2025-001',
+    type: 'invoice',
+    uploadDate: '2025-04-15T10:30:00',
+    size: '1.2 MB',
+    status: 'pending'
+  },
+  {
+    id: '2',
+    name: 'Contrat de Service',
+    type: 'contract',
+    uploadDate: '2025-04-14T15:45:00',
+    size: '2.8 MB',
+    status: 'approved'
+  },
+  {
+    id: '3',
+    name: 'Déclaration TVA Mars 2025',
+    type: 'tax',
+    uploadDate: '2025-04-13T09:15:00',
+    size: '856 KB',
+    status: 'processed'
+  },
+  {
+    id: '4',
+    name: 'Bulletin de paie - Mars 2025',
+    type: 'payroll',
+    uploadDate: '2025-04-12T16:20:00',
+    size: '450 KB',
+    status: 'approved'
+  }
+];
+
 export const notifications: Notification[] = [
   {
     id: '1',
