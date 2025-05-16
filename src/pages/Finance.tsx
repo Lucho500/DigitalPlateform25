@@ -217,7 +217,7 @@ const mockSuppliers: Supplier[] = [
   }
 ];
 
-export const Finance: React.FC = () => {
+export default function Finance() {
   const [activeTab, setActiveTab] = useState<TabType>('interim_closing');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReconciliationType, setSelectedReconciliationType] = useState<'suppliers_customers' | 'accounting'>('suppliers_customers');
@@ -1032,6 +1032,4 @@ export const Finance: React.FC = () => {
       </Card>
     </div>
   );
-};
-
-export { Finance }
+}
