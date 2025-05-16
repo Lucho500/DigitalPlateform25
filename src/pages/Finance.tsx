@@ -4,13 +4,19 @@ import {
   ArrowUpRight, ArrowDownRight, Download, FileCheck, AlertCircle, Clock, BookOpen, 
   FileSpreadsheet, ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, CreditCard, 
   Send, DollarSign, Receipt, Calendar, CheckCircle2, Briefcase, PenTool as Tool, Archive, 
-  Box, HardDrive, HelpCircle, Edit, Trash2, MoreVertical
+  Box, HardDrive, HelpCircle, Edit, Trash2, MoreVertical, Upload
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { mockInvoices, mockReminders, mockOpenItems } from '../data/mockData';
-import type { Invoice, OpenItem, Reminder } from '../types';
+import { 
+  mockInvoices, mockReminders, mockOpenItems, mockSupplierInvoices, 
+  mockPaymentProposals, mockSupplierPayments, mockSupplierOpenItems 
+} from '../data/mockData';
+import type { 
+  Invoice, OpenItem, Reminder, SupplierInvoice, PaymentProposal, 
+  SupplierPayment, SupplierOpenItem 
+} from '../types';
 
 type TabType = 
   | 'clients' 
@@ -346,6 +352,332 @@ const Finance = () => {
     }
   };
 
+  const renderSupplierContent = () => {
+    switch (supplierTab) {
+      case 'entry':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Upload size={16} />}>
+                  Importer des factures
+                </Button>
+                <Button variant="primary" leftIcon={<Plus size={16} />}>
+                  Nouvelle facture
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Numéro
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fournisseur
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockSupplierInvoices.map((invoice) => (
+                    <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {invoice.number}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {invoice.supplierName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(invoice.date)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(invoice.dueDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(invoice.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(invoice.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Voir
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Edit size={16} className="mr-2" />
+                          Modifier
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreVertical size={16} />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'payment_proposal':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="primary" leftIcon={<Plus size={16} />}>
+                  Nouvelle proposition
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fournisseur
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Priorité
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockPaymentProposals.map((proposal) => (
+                    <tr key={proposal.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {proposal.supplierName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(proposal.dueDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(proposal.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        <Badge variant={
+                          proposal.priority === 'high' ? 'error' :
+                          proposal.priority === 'medium' ? 'warning' : 'info'
+                        }>
+                          {proposal.priority === 'high' ? 'Haute' :
+                           proposal.priority === 'medium' ? 'Moyenne' : 'Basse'}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(proposal.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Voir
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <CheckCircle2 size={16} className="mr-2" />
+                          Approuver
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'payment':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="primary" leftIcon={<Send size={16} />}>
+                  Exécuter les paiements
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fournisseur
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date prévue
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Méthode
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockSupplierPayments.map((payment) => (
+                    <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {payment.supplierName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(payment.scheduledDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(payment.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center text-sm">
+                        {payment.method === 'sepa' ? 'SEPA' :
+                         payment.method === 'wire' ? 'Virement' : 'Chèque'}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(payment.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Détails
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'open_items':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Plus size={16} />}>
+                  Nouveau règlement
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" leftIcon={<Download size={16} />}>
+                  Exporter
+                </Button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Facture
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fournisseur
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Échéance
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Montant total
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Reste à payer
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {mockSupplierOpenItems.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {item.invoiceNumber}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.supplierName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(item.date)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {formatDate(item.dueDate)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(item.amount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
+                        {formatCurrency(item.remainingAmount)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-center">
+                        {getStatusBadge(item.status)}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Button variant="ghost" size="sm">
+                          <Eye size={16} className="mr-2" />
+                          Détails
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'clients':
@@ -410,8 +742,8 @@ const Finance = () => {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              {/* Supplier content based on supplierTab */}
+            <CardContent className="p-6">
+              {renderSupplierContent()}
             </CardContent>
           </Card>
         );
