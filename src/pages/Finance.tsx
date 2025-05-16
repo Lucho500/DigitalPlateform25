@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Users, Building, Ban as Bank, FileText, Calculator, PieChart, 
-  BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
-  FileCheck, AlertCircle, Clock, BookOpen, FileSpreadsheet,
-  ClipboardCheck, FileSignature, Search, Filter, Plus, Eye,
-  CreditCard, Send, DollarSign, Receipt, Calendar, CheckCircle2,
-  Briefcase, Tool, Archive, Box, HardDrive, HelpCircle
-} from 'lucide-react';
+import { Users, Building, Ban as Bank, FileText, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download, FileCheck, AlertCircle, Clock, BookOpen, FileSpreadsheet, ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, CreditCard, Send, DollarSign, Receipt, Calendar, CheckCircle2, Briefcase, PenTool as Tool, Archive, Box, HardDrive, HelpCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
