@@ -1,5 +1,14 @@
 import { Document, KPI, Meeting, Message, Notification, Task, User, Invoice, InvoiceItem, Reminder, OpenItem, SupplierInvoice, PaymentProposal, SupplierPayment, SupplierOpenItem, BankReconciliation, COFIEntry } from '../types';
 
+export const currentUser: User = {
+  id: '1',
+  name: 'John Doe',
+  email: 'john.doe@company.com',
+  role: 'Administrator',
+  avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150',
+  status: 'online'
+};
+
 // ... (previous mock data)
 
 export const mockBankReconciliations: BankReconciliation[] = [
