@@ -5,7 +5,7 @@ import { Badge } from '../components/ui/Badge';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { mockPerformanceData } from '../data/mockData';
-import { Users, Building, Bank, FileCheck, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 export const Finance = () => {
   const [activeTab, setActiveTab] = useState('analytics');
