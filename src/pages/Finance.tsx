@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { Users, Building, Ban as Bank, FileCheck, FileText, Calculator } from 'lucide-react';
+import { Users, Building, Ban as Bank, FileCheck, FileText, Calculator, Search, Filter, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { mockPerformanceData } from '../data/mockData';
+import { formatCurrency, formatPercentage } from '../utils/formatters';
 
 export default function Finance() {
-  const [activeTab, setActiveTab] = useState('annual_closing');
+  const [activeTab, setActiveTab] = useState('clients');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const tabs = [
     { id: 'clients', label: 'Clients', icon: Users },
@@ -16,33 +20,253 @@ export default function Finance() {
     { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator }
   ];
 
-  // Add placeholder render functions for each tab
   const renderClientsTab = () => {
     return (
-      <div className="p-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Clients</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Contenu en cours de développement</p>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">CA Clients</p>
+                  <h3 className="text-xl font-semibold mt-1">84 000 €</h3>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <ArrowUpRight className="text-green-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-green-600">+12% vs mois précédent</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Créances</p>
+                  <h3 className="text-xl font-semibold mt-1">53 000 €</h3>
+                </div>
+                <div className="p-2 bg-red-100 dark:bg-red-900 rounded-full">
+                  <ArrowDownRight className="text-red-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-red-600">+8% vs mois précédent</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">DSO</p>
+                  <h3 className="text-xl font-semibold mt-1">45 jours</h3>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <ArrowUpRight className="text-blue-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-blue-600">-5 jours vs objectif</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Clients actifs</p>
+                  <h3 className="text-xl font-semibold mt-1">42</h3>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <Users className="text-purple-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-purple-600">+2 ce mois</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Évolution CA Clients</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="success" size="sm">+15.3% vs N-1</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="#0046AD" 
+                      fill="#0046AD" 
+                      fillOpacity={0.6}
+                      name="CA"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Analyse des marges</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="info" size="sm">Par client</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Bar dataKey="margin" fill="#00A3A1" name="Marge" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   };
 
   const renderSuppliersTab = () => {
     return (
-      <div className="p-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Fournisseurs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Contenu en cours de développement</p>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Achats</p>
+                  <h3 className="text-xl font-semibold mt-1">45 000 €</h3>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <ArrowDownRight className="text-green-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-green-600">-8% vs mois précédent</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Dettes</p>
+                  <h3 className="text-xl font-semibold mt-1">28 000 €</h3>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <ArrowUpRight className="text-blue-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-blue-600">+5% vs mois précédent</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">DPO</p>
+                  <h3 className="text-xl font-semibold mt-1">30 jours</h3>
+                </div>
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                  <ArrowUpRight className="text-yellow-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-yellow-600">+2 jours vs objectif</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Fournisseurs actifs</p>
+                  <h3 className="text-xl font-semibold mt-1">28</h3>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <Building className="text-purple-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-purple-600">Stable</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Évolution des achats</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="success" size="sm">Optimisé</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="expenses" 
+                      stroke="#FF6B35" 
+                      fill="#FF6B35" 
+                      fillOpacity={0.6}
+                      name="Achats"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Analyse des coûts</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="info" size="sm">Par catégorie</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={mockPerformanceData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `${value/1000}k€`} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Bar dataKey="analyticsA" fill="#0046AD" name="Coûts directs" />
+                    <Bar dataKey="analyticsB" fill="#FF6B35" name="Coûts indirects" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   };
