@@ -4,7 +4,7 @@ import {
   BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
   FileText, CheckCircle, AlertCircle, Clock, BookOpen, FileSpreadsheet,
   ClipboardCheck, FileSignature, Plus, Filter, Search, Eye, Upload,
-  DollarSign, Package, Briefcase, Tool, HelpCircle
+  DollarSign, Package, Briefcase, Wrench, HelpCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
@@ -24,7 +24,7 @@ export default function Finance() {
     { id: 'payroll', label: 'Import Salaires', icon: DollarSign },
     { id: 'inventory', label: 'Stocks', icon: Package },
     { id: 'investments', label: 'Titres', icon: Briefcase },
-    { id: 'fixed_assets', label: 'Immobilisations', icon: Tool },
+    { id: 'fixed_assets', label: 'Immobilisations', icon: Wrench },
     { id: 'audit', label: 'Support Audit', icon: HelpCircle }
   ];
 
