@@ -261,6 +261,24 @@ export const Finance: React.FC = () => {
     );
   };
 
+  const renderAnnualClosing = () => {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Clôture Annuelle</h2>
+        <p className="text-gray-500">Cette section est en cours de développement.</p>
+      </div>
+    );
+  };
+
+  const renderAnalyticsTab = () => {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Comptabilité analytique</h2>
+        <p className="text-gray-500">Cette section est en cours de développement.</p>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex space-x-2">
