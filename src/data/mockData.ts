@@ -1,140 +1,171 @@
 import { Document, KPI, Meeting, Message, Notification, Task, User, BankReconciliation, COFIEntry, PayrollEntry, StockItem, StockMovement, Investment, FixedAsset, AuditRequest } from '../types';
 
-// ... (existing mock data)
+export const currentUser: User = {
+  id: '1',
+  name: 'Sophie Martin',
+  email: 'sophie.martin@example.com',
+  role: 'client',
+  avatar: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg?auto=compress&cs=tinysrgb&w=150'
+};
 
-export const mockPayrollEntries: PayrollEntry[] = [
-  {
-    id: '1',
-    date: '2025-04-15',
-    employeeId: 'EMP001',
-    employeeName: 'Jean Dupont',
-    grossAmount: 4500,
-    netAmount: 3200,
-    status: 'pending'
-  },
+export const experts: User[] = [
   {
     id: '2',
-    date: '2025-04-15',
-    employeeId: 'EMP002',
-    employeeName: 'Marie Martin',
-    grossAmount: 3800,
-    netAmount: 2800,
-    status: 'imported'
+    name: 'Thomas Dubois',
+    email: 'thomas.dubois@mazars.fr',
+    role: 'expert',
+    avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150'
+  },
+  {
+    id: '3',
+    name: 'Claire Bernard',
+    email: 'claire.bernard@mazars.fr',
+    role: 'expert',
+    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150'
   }
 ];
 
-export const mockStockItems: StockItem[] = [
+export const documents: Document[] = [
   {
     id: '1',
-    code: 'PROD001',
-    name: 'Produit A',
-    category: 'Catégorie 1',
-    quantity: 150,
-    unitPrice: 25,
-    totalValue: 3750,
-    lastMovement: '2025-04-15'
+    name: 'Facture_Fournisseur_Avril2025.pdf',
+    type: 'invoice',
+    uploadDate: '2025-04-15',
+    status: 'processed',
+    size: '2.4 MB',
+    url: '#'
   },
   {
     id: '2',
-    code: 'PROD002',
-    name: 'Produit B',
-    category: 'Catégorie 2',
-    quantity: 80,
-    unitPrice: 45,
-    totalValue: 3600,
-    lastMovement: '2025-04-14'
-  }
-];
-
-export const mockStockMovements: StockMovement[] = [
-  {
-    id: '1',
-    date: '2025-04-15',
-    type: 'in',
-    itemId: 'PROD001',
-    quantity: 50,
-    unitPrice: 25,
-    totalAmount: 1250,
-    reference: 'REC001'
+    name: 'Bilan_Financier_Q1_2025.xlsx',
+    type: 'financial',
+    uploadDate: '2025-04-10',
+    status: 'approved',
+    size: '1.8 MB',
+    url: '#'
   },
   {
-    id: '2',
-    date: '2025-04-14',
-    type: 'out',
-    itemId: 'PROD002',
-    quantity: 20,
-    unitPrice: 45,
-    totalAmount: 900,
-    reference: 'LIV001'
-  }
-];
-
-export const mockInvestments: Investment[] = [
-  {
-    id: '1',
-    name: 'Action Tech Corp',
-    type: 'stock',
-    quantity: 100,
-    purchasePrice: 50,
-    currentPrice: 65,
-    purchaseDate: '2025-01-15',
-    performance: 30
-  },
-  {
-    id: '2',
-    name: 'Obligation État',
-    type: 'bond',
-    quantity: 50,
-    purchasePrice: 1000,
-    currentPrice: 1020,
-    purchaseDate: '2025-02-01',
-    performance: 2
-  }
-];
-
-export const mockFixedAssets: FixedAsset[] = [
-  {
-    id: '1',
-    name: 'Machine de production',
-    category: 'Équipement industriel',
-    purchaseDate: '2024-01-15',
-    purchaseAmount: 50000,
-    depreciationMethod: 'linear',
-    depreciationPeriod: 5,
-    currentValue: 40000,
-    status: 'active'
-  },
-  {
-    id: '2',
-    name: 'Véhicule de service',
-    category: 'Transport',
-    purchaseDate: '2024-03-01',
-    purchaseAmount: 25000,
-    depreciationMethod: 'degressive',
-    depreciationPeriod: 4,
-    currentValue: 22000,
-    status: 'active'
-  }
-];
-
-export const mockAuditRequests: AuditRequest[] = [
-  {
-    id: '1',
-    date: '2025-04-15',
-    topic: 'Validation des amortissements',
-    description: 'Vérification du calcul des amortissements pour l\'exercice 2024',
+    id: '3',
+    name: 'Contrat_Prestation_Tech_Solutions.pdf',
+    type: 'contract',
+    uploadDate: '2025-04-05',
     status: 'pending',
-    priority: 'high',
-    dueDate: '2025-04-30'
+    size: '3.1 MB',
+    url: '#'
+  }
+];
+
+export const notifications: Notification[] = [
+  {
+    id: '1',
+    title: 'Document approuvé',
+    message: 'Votre Bilan Financier Q1 2025 a été approuvé',
+    date: '2025-04-16T10:30:00',
+    read: false,
+    type: 'success'
   },
   {
     id: '2',
-    date: '2025-04-14',
-    topic: 'Contrôle des stocks',
-    description: 'Audit de la valorisation des stocks',
-    status: 'in-progress',
-    priority: 'medium',
-    assignedTo: 'Thomas Dubois',
-    dueDate: '2025-04-25'
+    title: 'Déclaration TVA à venir',
+    message: 'N\'oubliez pas de soumettre votre déclaration TVA avant le 20 avril',
+    date: '2025-04-15T09:15:00',
+    read: true,
+    type: 'warning'
+  }
+];
+
+export const kpis: KPI[] = [
+  {
+    id: '1',
+    title: 'Chiffre d\'affaires mensuel',
+    value: 81000,
+    unit: '€',
+    change: 15.3,
+    trend: 'up'
+  },
+  {
+    id: '2',
+    title: 'Trésorerie nette',
+    value: 125000,
+    unit: '€',
+    change: 8.7,
+    trend: 'up'
+  }
+];
+
+export const meetings: Meeting[] = [
+  {
+    id: '1',
+    title: 'Revue comptable mensuelle',
+    date: '2025-04-22',
+    time: '14:00',
+    duration: 45,
+    type: 'video',
+    expert: {
+      id: '2',
+      name: 'Thomas Dubois',
+      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
+      role: 'Expert-comptable'
+    }
+  }
+];
+
+export const messages: Message[] = [
+  {
+    id: '1',
+    sender: {
+      id: '2',
+      name: 'Thomas Dubois',
+      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
+      role: 'expert'
+    },
+    content: 'Bonjour Sophie, j\'ai remarqué une incohérence dans vos dernières factures. Pouvons-nous en discuter lors de notre prochain rendez-vous ?',
+    timestamp: '2025-04-15T14:30:00',
+    read: true
+  }
+];
+
+export const tasks: Task[] = [
+  {
+    id: '1',
+    title: 'Validation des factures fournisseurs',
+    description: 'Vérifier et valider les factures fournisseurs du mois d\'avril',
+    dueDate: '2025-04-20',
+    status: 'pending',
+    priority: 'high'
+  }
+];
+
+export const mockBankReconciliations = [
+  {
+    bankName: "Banque Principale",
+    bankBalance: 125000,
+    accountingBalance: 124500,
+    difference: 500,
+    status: "En cours"
+  },
+  {
+    bankName: "Compte Secondaire",
+    bankBalance: 45000,
+    accountingBalance: 45000,
+    difference: 0,
+    status: "Terminé"
+  }
+];
+
+export const mockCOFIEntries = [
+  {
+    id: "1",
+    date: "2025-04-15",
+    description: "Virement client ABC",
+    amount: 5000,
+    status: "Rapproché"
+  },
+  {
+    id: "2",
+    date: "2025-04-14",
+    description: "Paiement fournisseur XYZ",
+    amount: -2500,
+    status: "En attente"
   }
 ];
