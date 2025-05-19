@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, Receipt, FolderOpen, Building2, Calendar, CheckSquare, Search, Filter, Plus, Download, Eye, FileText, Upload, MoreVertical, Car, Ban as Bank, Wrench as Tool, FileCheck, Mail, MapPin } from 'lucide-react';
+import { Clock, Receipt, FolderOpen, Building2, Calendar, CheckSquare, Search, Filter, Plus, Download, Eye, FileText, Upload, MoreVertical, Car, Ban as Bank, Wrench, FileCheck, Mail, MapPin } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -436,7 +436,7 @@ export const Administrative: React.FC = () => {
 
                     <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <Tool size={20} className="text-purple-500" />
+                        <Wrench size={20} className="text-purple-500" />
                         <div>
                           <h4 className="font-medium">Contrats d'entretien</h4>
                           <p className="text-sm text-gray-500">4 documents</p>
