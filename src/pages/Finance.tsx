@@ -4,15 +4,40 @@ import {
   BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
   FileText, CheckCircle, AlertCircle, Clock, BookOpen, FileSpreadsheet,
   ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, ArrowRight,
-  CreditCard, Receipt, FileArchive, Mail
+  CreditCard, Receipt, FileArchive, Mail, DollarSign, Package, Briefcase,
+  HelpCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { mockBankReconciliations, mockCOFIEntries } from '../data/mockData';
 
+type TabType = 
+  | 'clients' 
+  | 'suppliers' 
+  | 'bank_reconciliation' 
+  | 'interim_closing' 
+  | 'analytics' 
+  | 'annual_closing'
+  | 'salary_entries'
+  | 'inventory'
+  | 'securities'
+  | 'fixed_assets'
+  | 'audit_support';
+
+interface TabProps {
+  id: TabType;
+  label: string;
+  icon: React.ReactNode;
+  subTabs?: {
+    id: string;
+    label: string;
+  }[];
+}
+
 export const Finance: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('annual_closing');
+  const [activeTab, setActiveTab] = useState<TabType>('clients');
+  const [activeSubTab, setActiveSubTab] = useState<string>('invoices');
   const [searchTerm, setSearchTerm] = useState('');
 
   const formatCurrency = (amount: number) => {
@@ -23,6 +48,88 @@ export const Finance: React.FC = () => {
       maximumFractionDigits: 0
     }).format(amount);
   };
+
+  const tabs: TabProps[] = [
+    { 
+      id: 'clients', 
+      label: 'Clients', 
+      icon: <Users size={20} />,
+      subTabs: [
+        { id: 'invoices', label: 'Factures et offres' },
+        { id: 'open_items', label: 'Postes ouverts débiteurs' },
+        { id: 'reminders', label: 'Gestion des rappels' }
+      ]
+    },
+    { 
+      id: 'suppliers', 
+      label: 'Fournisseurs', 
+      icon: <Building size={20} />,
+      subTabs: [
+        { id: 'entry', label: 'Saisie' },
+        { id: 'payment_proposal', label: 'Proposition de paiement' },
+        { id: 'payment', label: 'Mise au paiement' },
+        { id: 'open_items', label: 'Postes ouverts créanciers' }
+      ]
+    },
+    { 
+      id: 'bank_reconciliation', 
+      label: 'Rapprochement bancaire', 
+      icon: <Bank size={20} />,
+      subTabs: [
+        { id: 'reconciliation', label: 'Acquittement Fournisseurs / débiteurs' },
+        { id: 'cofi', label: 'Comptabilisation COFI' }
+      ]
+    },
+    { 
+      id: 'interim_closing', 
+      label: 'Clôture intermédiaire', 
+      icon: <FileCheck size={20} />,
+      subTabs: [
+        { id: 'reporting', label: 'Reporting' }
+      ]
+    },
+    { 
+      id: 'analytics', 
+      label: 'Compta analytique', 
+      icon: <Calculator size={20} /> 
+    },
+    { 
+      id: 'annual_closing', 
+      label: 'Clôture annuelle', 
+      icon: <BookOpen size={20} />,
+      subTabs: [
+        { id: 'entries', label: 'Écritures' },
+        { id: 'documentation', label: 'Dossier de clôture documenté' },
+        { id: 'financial_statements', label: 'États financiers' },
+        { id: 'pvago', label: 'PVAGO' }
+      ]
+    },
+    { 
+      id: 'salary_entries', 
+      label: 'Import écritures salaire', 
+      icon: <DollarSign size={20} /> 
+    },
+    { 
+      id: 'inventory', 
+      label: 'Gestion des stocks', 
+      icon: <Package size={20} /> 
+    },
+    { 
+      id: 'securities', 
+      label: 'Gestion des titres', 
+      icon: <Briefcase size={20} /> 
+    },
+    { 
+      id: 'fixed_assets', 
+      label: 'Gestion des immos', 
+      icon: <Building size={20} /> 
+    },
+    { 
+      id: 'audit_support', 
+      label: 'Support à l\'audit', 
+      icon: <HelpCircle size={20} /> 
+    }
+  ];
 
   const renderClientsTab = () => {
     return (
@@ -171,7 +278,6 @@ export const Finance: React.FC = () => {
                       </Button>
                     </td>
                   </tr>
-                  {/* Ajoutez d'autres clients ici */}
                 </tbody>
               </table>
             </div>
@@ -328,7 +434,6 @@ export const Finance: React.FC = () => {
                       </Button>
                     </td>
                   </tr>
-                  {/* Ajoutez d'autres fournisseurs ici */}
                 </tbody>
               </table>
             </div>
@@ -443,6 +548,21 @@ export const Finance: React.FC = () => {
           </CardHeader>
           <CardContent>
             {/* Contenu du tab clôture intermédiaire */}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderAnalyticsTab = () => {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Comptabilité analytique</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Contenu du tab analytique */}
           </CardContent>
         </Card>
       </div>
@@ -689,51 +809,52 @@ export const Finance: React.FC = () => {
     );
   };
 
-  const renderAnalyticsTab = () => {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Comptabilité analytique</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Contenu du tab analytique */}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const tabs = [
-    { id: 'clients', label: 'Clients', icon: Users },
-    { id: 'suppliers', label: 'Fournisseurs', icon: Building },
-    { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: Bank },
-    { id: 'interim_closing', label: 'Clôture intermédiaire', icon: FileCheck },
-    { id: 'annual_closing', label: 'Clôture Annuelle', icon: BookOpen },
-    { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator }
-  ];
-
   return (
     <div className="p-6 space-y-6">
-      <div className="flex space-x-2">
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => (
           <Button
             key={tab.id}
             variant={activeTab === tab.id ? 'primary' : 'ghost'}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => {
+              setActiveTab(tab.id);
+              if (tab.subTabs?.length) {
+                setActiveSubTab(tab.subTabs[0].id);
+              }
+            }}
+            className="flex items-center space-x-2"
           >
-            <tab.icon size={20} className="mr-2" />
-            {tab.label}
+            {tab.icon}
+            <span>{tab.label}</span>
           </Button>
         ))}
       </div>
 
-      {activeTab === 'clients' && renderClientsTab()}
-      {activeTab === 'suppliers' && renderSuppliersTab()}
-      {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
-      {activeTab === 'interim_closing' && renderInterimClosing()}
-      {activeTab === 'annual_closing' && renderAnnualClosing()}
-      {activeTab === 'analytics' && renderAnalyticsTab()}
+      {/* Sous-onglets */}
+      {tabs.find(t => t.id === activeTab)?.subTabs && (
+        <div className="flex gap-2 mt-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+          {tabs.find(t => t.id === activeTab)?.subTabs?.map((subTab) => (
+            <Button
+              key={subTab.id}
+              variant={activeSubTab === subTab.id ? 'primary' : 'ghost'}
+              onClick={() => setActiveSubTab(subTab.id)}
+              size="sm"
+            >
+              {subTab.label}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {/* Contenu des onglets */}
+      <div className="mt-6">
+        {activeTab === 'clients' && renderClientsTab()}
+        {activeTab === 'suppliers' && renderSuppliersTab()}
+        {activeTab === 'bank_reconciliation' && renderBankReconciliation()}
+        {activeTab === 'interim_closing' && renderInterimClosing()}
+        {activeTab === 'annual_closing' && renderAnnualClosing()}
+        {activeTab === 'analytics' && renderAnalyticsTab()}
+      </div>
     </div>
   );
 };
