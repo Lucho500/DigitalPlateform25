@@ -3,7 +3,8 @@ import {
   Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, 
   BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
   FileText, CheckCircle, AlertCircle, Clock, BookOpen, FileSpreadsheet,
-  ClipboardCheck, FileSignature, Plus, Filter, Search, Eye
+  ClipboardCheck, FileSignature, Plus, Filter, Search, Eye, Upload,
+  DollarSign, Package, Briefcase, Tool, HelpCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
@@ -19,7 +20,12 @@ export default function Finance() {
     { id: 'bank_reconciliation', label: 'Rapprochement bancaire', icon: Bank },
     { id: 'interim_closing', label: 'Clôture intermédiaire', icon: FileCheck },
     { id: 'annual_closing', label: 'Clôture Annuelle', icon: BookOpen },
-    { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator }
+    { id: 'analytics', label: 'Comptabilité analytique', icon: Calculator },
+    { id: 'payroll', label: 'Import Salaires', icon: DollarSign },
+    { id: 'inventory', label: 'Stocks', icon: Package },
+    { id: 'investments', label: 'Titres', icon: Briefcase },
+    { id: 'fixed_assets', label: 'Immobilisations', icon: Tool },
+    { id: 'audit', label: 'Support Audit', icon: HelpCircle }
   ];
 
   const formatCurrency = (amount: number) => {
@@ -592,9 +598,426 @@ export default function Finance() {
     );
   };
 
+  const renderPayrollTab = () => {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Import des écritures de salaire</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Fichier d'import</h4>
+                  <Button variant="outline" fullWidth leftIcon={<Upload size={16} />}>
+                    Sélectionner un fichier
+                  </Button>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Formats acceptés : .csv, .xlsx
+                  </p>
+                </div>
+
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Dernier import</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Date</span>
+                      <span>15/04/2025</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Montant total</span>
+                      <span className="font-medium">45 000 €</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Statut</span>
+                      <Badge variant="success">Validé</Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <h4 className="font-medium mb-4">Journal des imports</h4>
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="pb-2">Date</th>
+                      <th className="pb-2">Description</th>
+                      <th className="pb-2 text-right">Montant</th>
+                      <th className="pb-2 text-center">Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr>
+                      <td className="py-2">15/04/2025</td>
+                      <td>Salaires Mars 2025</td>
+                      <td className="text-right">45 000 €</td>
+                      <td className="text-center">
+                        <Badge variant="success">Validé</Badge>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2">15/03/2025</td>
+                      <td>Salaires Février 2025</td>
+                      <td className="text-right">44 500 €</td>
+                      <td className="text-center">
+                        <Badge variant="success">Validé</Badge>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderInventoryTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>État des stocks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Valeur totale</h4>
+                  <p className="text-2xl font-bold">250 000 €</p>
+                  <div className="mt-2 flex items-center text-sm text-green-500">
+                    <ArrowUpRight size={16} className="mr-1" />
+                    <span>+5% depuis le dernier mois</span>
+                  </div>
+                </div>
+                <Button variant="outline" fullWidth>
+                  Voir le détail
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Mouvements</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Entrées</p>
+                    <p className="text-lg font-semibold">+15 000 €</p>
+                  </div>
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Sorties</p>
+                    <p className="text-lg font-semibold">-12 000 €</p>
+                  </div>
+                </div>
+                <Button variant="outline" fullWidth>
+                  Nouveau mouvement
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Inventaire</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Dernier inventaire</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Date</span>
+                      <span>31/03/2025</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Écart</span>
+                      <span className="text-green-500">+1 250 €</span>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="primary" fullWidth>
+                  Nouvel inventaire
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
+  const renderInvestmentsTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Portefeuille</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Valeur totale</h4>
+                  <p className="text-2xl font-bold">750 000 €</p>
+                  <div className="mt-2 flex items-center text-sm text-green-500">
+                    <ArrowUpRight size={16} className="mr-1" />
+                    <span>+8.5% YTD</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Actions</span>
+                    <span>60%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Obligations</span>
+                    <span>30%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Trésorerie</span>
+                    <span>10%</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Transactions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button variant="primary" fullWidth>
+                  Nouvelle transaction
+                </Button>
+                <div className="space-y-2">
+                  <div className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">Achat Actions Tech</p>
+                        <p className="text-sm text-gray-500">15/04/2025</p>
+                      </div>
+                      <span className="text-green-500">+25 000 €</span>
+                    </div>
+                  </div>
+                  <div className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">Vente Obligations</p>
+                        <p className="text-sm text-gray-500">10/04/2025</p>
+                      </div>
+                      <span className="text-red-500">-15 000 €</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="h-40">
+                  {/* Add performance chart here */}
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>1 mois</span>
+                    <span className="text-green-500">+2.5%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>3 mois</span>
+                    <span className="text-green-500">+5.8%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>YTD</span>
+                    <span className="text-green-500">+8.5%</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
+  const renderFixedAssetsTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Immobilisations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Valeur nette comptable</h4>
+                  <p className="text-2xl font-bold">1 250 000 €</p>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Valeur brute</span>
+                      <span>2 000 000 €</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Amortissements</span>
+                      <span>750 000 €</span>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="primary" fullWidth>
+                  Nouvelle immobilisation
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Amortissements</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">À comptabiliser</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Avril 2025</span>
+                      <span>15 000 €</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Mai 2025</span>
+                      <span>15 000 €</span>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="outline" fullWidth>
+                  Calculer les amortissements
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Cessions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-2">Dernières cessions</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Véhicule A</span>
+                      <span className="text-green-500">+5 000 €</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Machine B</span>
+                      <span className="text-red-500">-2 000 €</span>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="outline" fullWidth>
+                  Nouvelle cession
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAuditTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Documents d'audit</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Balance âgée</h4>
+                  <Button variant="outline" fullWidth>
+                    Télécharger
+                  </Button>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Grand livre</h4>
+                  <Button variant="outline" fullWidth>
+                    Télécharger
+                  </Button>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Journal des écritures</h4>
+                  <Button variant="outline" fullWidth>
+                    Télécharger
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Support à l'audit</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Questions en attente</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span>Justificatifs</span>
+                      <Badge variant="warning">3</Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Confirmations</span>
+                      <Badge variant="warning">2</Badge>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-medium mb-4">Dernières demandes</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span>Facture 2025-001</span>
+                      <Badge variant="success">Fourni</Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Contrat location</span>
+                      <Badge variant="warning">En attente</Badge>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="primary" fullWidth>
+                  Répondre aux demandes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 overflow-x-auto pb-2">
         {tabs.map((tab) => (
           <Button
             key={tab.id}
@@ -613,6 +1036,11 @@ export default function Finance() {
       {activeTab === 'interim_closing' && renderInterimClosingTab()}
       {activeTab === 'annual_closing' && renderAnnualClosingTab()}
       {activeTab === 'analytics' && renderAnalyticsTab()}
+      {activeTab === 'payroll' && renderPayrollTab()}
+      {activeTab === 'inventory' && renderInventoryTab()}
+      {activeTab === 'investments' && renderInvestmentsTab()}
+      {activeTab === 'fixed_assets' && renderFixedAssetsTab()}
+      {activeTab === 'audit' && renderAuditTab()}
     </div>
   );
 }
