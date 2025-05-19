@@ -4,16 +4,14 @@ import {
   ArrowUpRight, ArrowDownRight, Download, FileCheck, AlertCircle, Clock, BookOpen, 
   FileSpreadsheet, ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, CreditCard, 
   Send, DollarSign, Receipt, Calendar, CheckCircle2, Briefcase, PenTool as Tool, Archive, 
-  Box, HardDrive, HelpCircle, Edit, Trash2, MoreVertical, Upload, CheckCircle, XCircle,
-  ArrowLeftRight, FileSearch, RefreshCw
+  Box, HardDrive, HelpCircle, Edit, Trash2, MoreVertical, Upload
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { 
   mockInvoices, mockReminders, mockOpenItems, mockSupplierInvoices, 
-  mockPaymentProposals, mockSupplierPayments, mockSupplierOpenItems,
-  mockBankReconciliations, mockCOFIEntries 
+  mockPaymentProposals, mockSupplierPayments, mockSupplierOpenItems 
 } from '../data/mockData';
 import type { 
   Invoice, OpenItem, Reminder, SupplierInvoice, PaymentProposal, 
@@ -615,7 +613,6 @@ const Finance = () => {
                   <tr className="border-b border-gray-200 dark:border-gray-700">
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Facture
-                
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Fournisseur
@@ -776,170 +773,8 @@ const Finance = () => {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                {/* Bank reconciliation filters */}
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="Rechercher une transaction..."
-                        className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
-                      />
-                    </div>
-                    <select className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
-                      <option value="">Tous les types</option>
-                      <option value="supplier">Fournisseurs</option>
-                      <option value="debtor">Débiteurs</option>
-                    </select>
-                    <select className="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
-                      <option value="">Tous les statuts</option>
-                      <option value="pending">En attente</option>
-                      <option value="matched">Rapproché</option>
-                      <option value="reconciled">Lettré</option>
-                    </select>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" leftIcon={<RefreshCw size={16} />}>
-                      Rafraîchir
-                    </Button>
-                    <Button variant="outline" leftIcon={<Download size={16} />}>
-                      Exporter
-                    </Button>
-                    <Button variant="primary" leftIcon={<ArrowLeftRight size={16} />}>
-                      Lettrer
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Bank reconciliation table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200 dark:border-gray-700">
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Référence
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Description
-                        </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Montant
-                        </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Type
-                        </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Statut
-                        </th>
-                        <th className="px-4 py-3"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                      {mockBankReconciliations.map((reconciliation) => (
-                        <tr key={reconciliation.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {formatDate(reconciliation.date)}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {reconciliation.reference}
-                          </td>
-                          <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            {reconciliation.description}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-right font-medium">
-                            <span className={reconciliation.amount < 0 ? 'text-red-600' : 'text-green-600'}>
-                              {formatCurrency(reconciliation.amount)}
-                            </span>
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-center">
-                            <Badge variant={reconciliation.type === 'supplier' ? 'error' : 'success'}>
-                              {reconciliation.type === 'supplier' ? 'Fournisseur' : 'Débiteur'}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-center">
-                            {reconciliation.status === 'matched' ? (
-                              <Badge variant="info">Rapproché</Badge>
-                            ) : reconciliation.status === 'reconciled' ? (
-                              <Badge variant="success">Lettré</Badge>
-                            ) : (
-                              <Badge variant="warning">En attente</Badge>
-                            )}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <Button variant="ghost" size="sm">
-                              <FileSearch size={16} className="mr-2" />
-                              Rechercher
-                            </Button>
-                            {reconciliation.status === 'matched' && (
-                              <Button variant="ghost" size="sm">
-                                <CheckCircle size={16} className="mr-2" />
-                                Lettrer
-                              </Button>
-                            )}
-                            {reconciliation.status === 'reconciled' && (
-                              <Button variant="ghost" size="sm">
-                                <Eye size={16} className="mr-2" />
-                                Voir
-                              </Button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Summary cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">En attente</p>
-                          <p className="text-2xl font-semibold mt-1">12</p>
-                        </div>
-                        <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
-                          <Clock className="text-yellow-500" size={24} />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Rapprochés</p>
-                          <p className="text-2xl font-semibold mt-1">45</p>
-                        </div>
-                        <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                          <ArrowLeftRight className="text-blue-500" size={24} />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Lettrés</p>
-                          <p className="text-2xl font-semibold mt-1">78</p>
-                        </div>
-                        <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                          <CheckCircle className="text-green-500" size={24} />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+            <CardContent>
+              {/* Bank reconciliation content based on bankTab */}
             </CardContent>
           </Card>
         );
