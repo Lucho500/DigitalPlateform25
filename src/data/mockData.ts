@@ -9,6 +9,37 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const experts = [
+  {
+    id: '1',
+    name: 'Sophie Martin',
+    role: 'Expert-comptable',
+    avatar: 'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=150',
+    email: 'sophie.martin@company.com',
+  },
+  {
+    id: '2',
+    name: 'Pierre Dubois',
+    role: 'Expert-comptable',
+    avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
+    email: 'pierre.dubois@company.com',
+  },
+  {
+    id: '3',
+    name: 'Marie Lambert',
+    role: 'Expert-comptable',
+    avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150',
+    email: 'marie.lambert@company.com',
+  },
+  {
+    id: '4',
+    name: 'Thomas Bernard',
+    role: 'Expert-comptable',
+    avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=150',
+    email: 'thomas.bernard@company.com',
+  }
+];
+
 export const tasks: Task[] = [
   {
     id: '1',
