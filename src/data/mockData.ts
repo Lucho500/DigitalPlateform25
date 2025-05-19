@@ -331,3 +331,54 @@ export const mockCOFIEntries: COFIEntry[] = [
     reference: 'VIR-2025-004'
   }
 ];
+
+export const mockInvoices: Invoice[] = [
+  {
+    id: '1',
+    number: 'FAC-2025-001',
+    date: '2025-04-15',
+    dueDate: '2025-05-15',
+    clientName: 'Tech Solutions SAS',
+    status: 'paid',
+    totalHT: 12500,
+    totalTTC: 15000,
+    items: [
+      {
+        id: '1',
+        description: 'Développement application web',
+        quantity: 10,
+        unitPrice: 1250,
+        totalHT: 12500,
+        tva: 20
+      }
+    ]
+  },
+  {
+    id: '2',
+    number: 'FAC-2025-002',
+    date: '2025-04-14',
+    dueDate: '2025-05-14',
+    clientName: 'Digital Services SARL',
+    status: 'pending',
+    totalHT: 8750,
+    totalTTC: 10500,
+    items: [
+      {
+        id: '1',
+        description: 'Maintenance mensuelle',
+        quantity: 1,
+        unitPrice: 5000,
+        totalHT: 5000,
+        tva: 20
+      },
+      {
+        id: '2',
+        description: 'Support technique',
+        quantity: 15,
+        unitPrice: 250,
+        totalHT: 3750,
+        tva: 20
+      }
+    ]
+  }
+];
