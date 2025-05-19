@@ -15,3 +15,5 @@ const Finance: React.FC = () => {
 };
 
 export default Finance;
+
+export { Finance }
