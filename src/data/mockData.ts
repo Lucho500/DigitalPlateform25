@@ -9,6 +9,37 @@ export const currentUser: User = {
   status: 'online'
 };
 
+export const messages: Message[] = [
+  {
+    id: '1',
+    sender: experts[1],
+    content: 'Bonjour, pouvez-vous examiner les dernières écritures comptables ?',
+    timestamp: '2025-04-15T09:30:00',
+    read: true
+  },
+  {
+    id: '2',
+    sender: currentUser,
+    content: 'Bien sûr, je vais regarder ça tout de suite.',
+    timestamp: '2025-04-15T09:35:00',
+    read: true
+  },
+  {
+    id: '3',
+    sender: experts[1],
+    content: 'Merci ! N\'hésitez pas si vous avez des questions.',
+    timestamp: '2025-04-15T09:37:00',
+    read: true
+  },
+  {
+    id: '4',
+    sender: currentUser,
+    content: 'Je vous tiens au courant dès que j\'ai terminé la revue.',
+    timestamp: '2025-04-15T09:40:00',
+    read: true
+  }
+];
+
 export const experts = [
   {
     id: '1',
