@@ -3,7 +3,8 @@ import {
   Users, Building, Ban as Bank, FileCheck, Calculator, PieChart, 
   BarChart2, TrendingUp, ArrowUpRight, ArrowDownRight, Download,
   FileText, CheckCircle, AlertCircle, Clock, BookOpen, FileSpreadsheet,
-  ClipboardCheck, FileSignature, Search, Filter, Plus, Eye
+  ClipboardCheck, FileSignature, Search, Filter, Plus, Eye, ArrowRight,
+  CreditCard, Receipt, FileArchive, Mail
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
@@ -12,6 +13,7 @@ import { mockBankReconciliations, mockCOFIEntries } from '../data/mockData';
 
 export const Finance: React.FC = () => {
   const [activeTab, setActiveTab] = useState('annual_closing');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -25,12 +27,154 @@ export const Finance: React.FC = () => {
   const renderClientsTab = () => {
     return (
       <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un client..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <Button variant="primary" leftIcon={<Plus size={16} />}>
+            Nouveau client
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Chiffre d'affaires</p>
+                  <h3 className="text-xl font-semibold mt-1">450 000 €</h3>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <CreditCard className="text-green-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-green-600">+12% vs N-1</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Encours client</p>
+                  <h3 className="text-xl font-semibold mt-1">85 000 €</h3>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <Receipt className="text-blue-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-blue-600">45 jours</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Clients actifs</p>
+                  <h3 className="text-xl font-semibold mt-1">42</h3>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <Users className="text-purple-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-purple-600">+2 ce mois</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Factures en retard</p>
+                  <h3 className="text-xl font-semibold mt-1">5</h3>
+                </div>
+                <div className="p-2 bg-red-100 dark:bg-red-900 rounded-full">
+                  <AlertCircle className="text-red-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-red-600">15 000 €</div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
-            <CardTitle>Gestion des clients</CardTitle>
+            <CardTitle>Liste des clients</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Contenu du tab clients */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Contact
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      CA (12 mois)
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Encours
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td className="px-4 py-4">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          Tech Solutions SAS
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Paris, France
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div>
+                        <p className="text-sm">Jean Dupont</p>
+                        <p className="text-sm text-gray-500">jean.dupont@techsolutions.fr</p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 text-right font-medium">
+                      85 000 €
+                    </td>
+                    <td className="px-4 py-4 text-right font-medium">
+                      12 500 €
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <Badge variant="success">Actif</Badge>
+                    </td>
+                    <td className="px-4 py-4 text-right">
+                      <Button variant="ghost" size="sm">
+                        <Eye size={16} className="mr-2" />
+                        Voir
+                      </Button>
+                    </td>
+                  </tr>
+                  {/* Ajoutez d'autres clients ici */}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -40,12 +184,154 @@ export const Finance: React.FC = () => {
   const renderSuppliersTab = () => {
     return (
       <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un fournisseur..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 border-transparent focus:border-[#0046AD] focus:ring-1 focus:ring-[#0046AD] text-sm w-64"
+              />
+            </div>
+            <Button variant="outline" size="sm" leftIcon={<Filter size={16} />}>
+              Filtrer
+            </Button>
+          </div>
+          <Button variant="primary" leftIcon={<Plus size={16} />}>
+            Nouveau fournisseur
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Achats</p>
+                  <h3 className="text-xl font-semibold mt-1">280 000 €</h3>
+                </div>
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <Building className="text-blue-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-blue-600">+8% vs N-1</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Dettes fournisseurs</p>
+                  <h3 className="text-xl font-semibold mt-1">45 000 €</h3>
+                </div>
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+                  <Receipt className="text-green-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-green-600">30 jours</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Fournisseurs actifs</p>
+                  <h3 className="text-xl font-semibold mt-1">28</h3>
+                </div>
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <Building className="text-purple-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-purple-600">Stable</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Factures en attente</p>
+                  <h3 className="text-xl font-semibold mt-1">8</h3>
+                </div>
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                  <Clock className="text-yellow-500" size={20} />
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-yellow-600">25 000 €</div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
-            <CardTitle>Gestion des fournisseurs</CardTitle>
+            <CardTitle>Liste des fournisseurs</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Contenu du tab fournisseurs */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fournisseur
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Contact
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Achats (12 mois)
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Encours
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td className="px-4 py-4">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          Office Supplies Corp
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Lyon, France
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div>
+                        <p className="text-sm">Marie Martin</p>
+                        <p className="text-sm text-gray-500">marie.martin@officesupplies.fr</p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 text-right font-medium">
+                      45 000 €
+                    </td>
+                    <td className="px-4 py-4 text-right font-medium">
+                      8 500 €
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <Badge variant="success">Actif</Badge>
+                    </td>
+                    <td className="px-4 py-4 text-right">
+                      <Button variant="ghost" size="sm">
+                        <Eye size={16} className="mr-2" />
+                        Voir
+                      </Button>
+                    </td>
+                  </tr>
+                  {/* Ajoutez d'autres fournisseurs ici */}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       </div>
